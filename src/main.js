@@ -1,6 +1,6 @@
 import './styles.css';
 import heroPhoto from './assets/main-photo.jpg';
-import weddingMusic from './assets/wedding-music.ogg';
+import weddingMusic from './assets/moonlight-invitation.mp3';
 
 const gallery = [
   heroPhoto,
