@@ -1,6 +1,6 @@
 # chungchubJang
 
-Mobile wedding invitation for Jeong Chohee and Jang Hyunwoo.
+Mobile wedding invitation for Lee Jisu and Na Seonhui.
 
 ## Run locally
 
