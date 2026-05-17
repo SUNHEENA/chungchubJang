@@ -40,6 +40,8 @@ const text = {
   details: '\uc608\uc2dd \uc548\ub0b4',
   dateLabel: '\uc77c\uc2dc',
   dateValue: '2026\ub144 10\uc6d4 25\uc77c \uc77c\uc694\uc77c \uc624\ud6c4 2\uc2dc',
+  calendarTitle: 'October 2026',
+  calendarCaption: '\uc608\uc2dd\uae4c\uc9c0 \ub0a8\uc740 \uc2dc\uac04',
   placeLabel: '\uc7a5\uc18c',
   placeValue: '\ud640\ub9ac\ub370\uc774\uc778 \uad11\uc8fc',
   addressLabel: '\uc8fc\uc18c',
@@ -50,6 +52,11 @@ const text = {
   detail: '\uc0c1\uc138 \uc548\ub0b4',
   naver: '\ub124\uc774\ubc84 \uc9c0\ub3c4',
   kakao: '\uce74\uce74\uc624 \uc9c0\ub3c4',
+  transitTitle: '\uc548\ub0b4',
+  subwayTitle: '\uc9c0\ud558\ucca0',
+  busTitle: '\ubc84\uc2a4',
+  trainTitle: '\uae30\ucc28',
+  taxiTitle: '\ud0dd\uc2dc',
   galleryLabel: '\uc0ac\uc9c4',
   galleryAlt: '\uc6e8\ub529 \ubd84\uc704\uae30 \uc0ac\uc9c4',
   giftTitle: '\ub9c8\uc74c \uc804\ud558\uc2e4 \uacf3',
@@ -75,6 +82,7 @@ const mapQuery = encodeURIComponent('\ud640\ub9ac\ub370\uc774 \uc778 \uad11\uc8f
 
 document.querySelector('#app').innerHTML = `
   <main class="invite">
+    <button class="music-toggle" type="button" data-music-toggle aria-label="\ubc30\uacbd\uc74c\uc545 \uc7ac\uc0dd">\u25b6</button>
     <section class="hero" aria-label="${text.ariaHero}">
       <img class="hero__image" src="${gallery[0]}" alt="${text.heroAlt}" />
       <div class="hero__shade"></div>
@@ -82,6 +90,30 @@ document.querySelector('#app').innerHTML = `
         <p class="eyebrow">Wedding Invitation</p>
         <h1>${text.groom}<br />${text.bride}</h1>
         <p class="date">2026. 10. 25 SUN 14:00</p>
+      </div>
+    </section>
+
+    <section class="calendar section" aria-label="${text.dateLabel}">
+      <div class="calendar-card">
+        <div class="calendar-card__header">
+          <span>${text.calendarTitle}</span>
+          <strong>10.25</strong>
+        </div>
+        <div class="calendar-grid calendar-grid--weekdays">
+          ${['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'].map((day) => `<span>${day}</span>`).join('')}
+        </div>
+        <div class="calendar-grid">
+          ${Array.from({ length: 35 }, (_, index) => {
+            const day = index - 3;
+            if (day < 1 || day > 31) {
+              return '<span class="calendar-day is-muted"></span>';
+            }
+
+            return `<span class="calendar-day${day === 25 ? ' is-wedding-day' : ''}">${day}</span>`;
+          }).join('')}
+        </div>
+        <p class="calendar-time">${text.dateValue}</p>
+        <p class="countdown" data-countdown>${text.calendarCaption}</p>
       </div>
     </section>
 
@@ -109,7 +141,7 @@ document.querySelector('#app').innerHTML = `
           <dt>${text.addressLabel}</dt>
           <dd>
             <span>${text.addressValue}</span>
-            <button class="copy-inline" type="button" data-copy-address>${text.addressCopy}</button>
+            <button class="copy-icon" type="button" data-copy-address aria-label="${text.addressCopy}" title="${text.addressCopy}">\u2398</button>
           </dd>
         </div>
       </dl>
@@ -126,6 +158,25 @@ document.querySelector('#app').innerHTML = `
         <a href="https://www.higwangju.com/index.php?cate=001002" target="_blank" rel="noreferrer"><span aria-hidden="true">\u2139</span>${text.detail}</a>
         <a href="https://naver.me/xRhEBct3" target="_blank" rel="noreferrer"><span aria-hidden="true">N</span>${text.naver}</a>
         <a href="https://place.map.kakao.com/19925119" target="_blank" rel="noreferrer"><span aria-hidden="true">K</span>${text.kakao}</a>
+      </div>
+      <div class="transit">
+        <h3>${text.transitTitle}</h3>
+        <section>
+          <h4>${text.subwayTitle}</h4>
+          <p>1\ud638\uc120 \uae40\ub300\uc911\ucee8\ubca4\uc158\uc13c\ud130(\ub9c8\ub975)\uc5ed 4\ubc88 \ucd9c\uad6c\uc5d0\uc11c \ub3c4\ubcf4\ub85c 8\ubd84</p>
+        </section>
+        <section>
+          <h4>${text.busTitle}</h4>
+          <p>5.18\uacf5\uc6d0\u00b7\uae40\ub300\uc911\ucee8\ubca4\uc158\uc13c\ud130\uc5ed\u00b7\ubcf4\ud6c8\ud68c\uad00 \uc815\ub958\uc7a5 \ub3c4\ubcf4\ub85c 4\ubd84</p>
+          <p>\uc21c\ud65801, \uc88c\uc11d02, \uc77c\uace1388, \uc0c1\ubb3463, \uc0c1\ubb3464, 518</p>
+        </section>
+        <section>
+          <h4>${text.trainTitle}</h4>
+          <p>\uad11\uc8fc\uc1a1\uc815\uc5ed(KTX\u00b7SRT)</p>
+          <p>${text.subwayTitle}: \uad11\uc8fc\uc1a1\uc815\uc5ed\uc5d0\uc11c 1\ud638\uc120(\uc18c\ud0dc\uc5ed \ubc29\uba74) \uc2b9\ucc28 \u2192 \uae40\ub300\uc911\ucee8\ubca4\uc158\uc13c\ud130(\ub9c8\ub975)\uc5ed \ud558\ucc28, 20\ubd84 \uc18c\uc694</p>
+          <p>${text.busTitle}: \uad11\uc8fc\uc1a1\uc815\uc5ed \uc815\ub958\uc7a5\uc5d0\uc11c \uc88c\uc11d02 \uc2b9\ucc28 \u2192 5.18 \uc790\uc720\uacf5\uc6d0 \ud558\ucc28, 25\ubd84 \uc18c\uc694</p>
+          <p>${text.taxiTitle}: 20\ubd84 \uc18c\uc694</p>
+        </section>
       </div>
       <small class="details__status" aria-live="polite"></small>
     </section>
@@ -156,7 +207,7 @@ document.querySelector('#app').innerHTML = `
           return `
             <div class="account">
               <p>${accountText}</p>
-              <button type="button" data-account-index="${index}">${text.copy}</button>
+              <button class="copy-icon" type="button" data-account-index="${index}" aria-label="${text.copy}" title="${text.copy}">\u2398</button>
             </div>
           `;
         }).join('')}
@@ -179,6 +230,77 @@ document.querySelectorAll('[data-account-index]').forEach((button) => {
       status.textContent = text.copyFailed;
     }
   });
+});
+
+const weddingDate = new Date('2026-10-25T14:00:00+09:00');
+const countdown = document.querySelector('[data-countdown]');
+const updateCountdown = () => {
+  const remaining = weddingDate.getTime() - Date.now();
+
+  if (remaining <= 0) {
+    countdown.textContent = '\uc624\ub298\uc740 \uc608\uc2dd\uc77c\uc785\ub2c8\ub2e4.';
+    return;
+  }
+
+  const days = Math.floor(remaining / 86400000);
+  const hours = Math.floor((remaining % 86400000) / 3600000);
+  const minutes = Math.floor((remaining % 3600000) / 60000);
+  countdown.textContent = `${text.calendarCaption} ${days}\uc77c ${hours}\uc2dc\uac04 ${minutes}\ubd84`;
+};
+
+updateCountdown();
+setInterval(updateCountdown, 60000);
+
+let audioContext;
+let musicNodes;
+const musicToggle = document.querySelector('[data-music-toggle]');
+
+const startMusic = () => {
+  audioContext = audioContext || new AudioContext();
+  const masterGain = audioContext.createGain();
+  const filter = audioContext.createBiquadFilter();
+  const oscillators = [196, 246.94, 329.63].map((frequency, index) => {
+    const oscillator = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+
+    oscillator.type = index === 1 ? 'triangle' : 'sine';
+    oscillator.frequency.value = frequency;
+    gain.gain.value = index === 0 ? 0.035 : 0.018;
+    oscillator.connect(gain).connect(filter);
+    oscillator.start();
+    return oscillator;
+  });
+
+  filter.type = 'lowpass';
+  filter.frequency.value = 780;
+  masterGain.gain.value = 0.42;
+  filter.connect(masterGain).connect(audioContext.destination);
+  musicNodes = { masterGain, oscillators };
+  musicToggle.textContent = '\u275a\u275a';
+  musicToggle.setAttribute('aria-label', '\ubc30\uacbd\uc74c\uc545 \uc815\uc9c0');
+};
+
+const stopMusic = () => {
+  if (!musicNodes) {
+    return;
+  }
+
+  musicNodes.masterGain.gain.setTargetAtTime(0, audioContext.currentTime, 0.08);
+  window.setTimeout(() => {
+    musicNodes.oscillators.forEach((oscillator) => oscillator.stop());
+    musicNodes = null;
+  }, 220);
+  musicToggle.textContent = '\u25b6';
+  musicToggle.setAttribute('aria-label', '\ubc30\uacbd\uc74c\uc545 \uc7ac\uc0dd');
+};
+
+musicToggle.addEventListener('click', async () => {
+  if (musicNodes) {
+    stopMusic();
+    return;
+  }
+
+  startMusic();
 });
 
 document.querySelector('[data-copy-address]').addEventListener('click', async () => {

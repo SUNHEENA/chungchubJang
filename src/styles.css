@@ -102,8 +102,109 @@ h1 {
   backdrop-filter: blur(8px);
 }
 
+.music-toggle {
+  position: fixed;
+  top: 14px;
+  right: max(14px, calc((100vw - 480px) / 2 + 14px));
+  z-index: 10;
+  width: 42px;
+  min-height: 42px;
+  padding: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.74);
+  backdrop-filter: blur(10px);
+}
+
 .section {
   padding: clamp(46px, 10vw, 62px) 28px;
+}
+
+.calendar {
+  background: linear-gradient(180deg, #f8fbfc 0%, #fffdf9 100%);
+}
+
+.calendar-card {
+  overflow: hidden;
+  border: 1px solid rgba(151, 182, 198, 0.32);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 16px 36px rgba(64, 83, 96, 0.12);
+}
+
+.calendar-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 18px 15px;
+  background: linear-gradient(135deg, #d9eaf1, #fff9ee);
+  color: #2f3d47;
+}
+
+.calendar-card__header span {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 18px;
+}
+
+.calendar-card__header strong {
+  font-size: 15px;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  padding: 7px 14px;
+}
+
+.calendar-grid--weekdays {
+  padding-top: 15px;
+  color: #7b919e;
+  font-size: 11px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.calendar-day {
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  color: #344650;
+  font-size: 14px;
+}
+
+.calendar-day.is-muted {
+  color: transparent;
+}
+
+.calendar-day.is-wedding-day {
+  position: relative;
+  background: #2f667f;
+  color: #fff;
+  font-weight: 900;
+  box-shadow: 0 8px 18px rgba(47, 102, 127, 0.24);
+}
+
+.calendar-day.is-wedding-day::after {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  border: 1px solid rgba(47, 102, 127, 0.28);
+  border-radius: inherit;
+}
+
+.calendar-time {
+  margin: 10px 18px 0;
+  color: #2f3d47;
+  text-align: center;
+  font-weight: 800;
+}
+
+.countdown {
+  margin: 8px 18px 20px;
+  color: #6d808b;
+  text-align: center;
+  font-size: 14px;
 }
 
 .intro {
@@ -163,14 +264,18 @@ dd {
 }
 
 dd span {
-  display: block;
+  display: inline;
 }
 
-.copy-inline {
-  min-height: 34px;
-  margin-top: 8px;
-  padding: 0 12px;
-  font-size: 13px;
+.copy-icon {
+  width: 30px;
+  min-height: 30px;
+  padding: 0;
+  margin-left: 6px;
+  border-radius: 999px;
+  font-size: 15px;
+  vertical-align: middle;
+  box-shadow: none;
 }
 
 .map-preview {
@@ -205,6 +310,38 @@ dd span {
   margin-top: 12px;
   color: #6d808b;
   text-align: center;
+}
+
+.transit {
+  display: grid;
+  gap: 14px;
+  margin-top: 28px;
+  padding: 18px;
+  border: 1px solid rgba(151, 182, 198, 0.28);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.62);
+}
+
+.transit h3,
+.transit h4,
+.transit p {
+  margin: 0;
+}
+
+.transit h3 {
+  font-size: 18px;
+}
+
+.transit h4 {
+  margin-bottom: 5px;
+  color: #587585;
+  font-size: 14px;
+}
+
+.transit p {
+  color: #4f5f69;
+  font-size: 14px;
+  line-height: 1.7;
 }
 
 .actions a,
@@ -374,8 +511,10 @@ button:hover {
 }
 
 .account {
-  display: grid;
-  gap: 10px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
 }
 
 .account p {
@@ -383,7 +522,7 @@ button:hover {
 }
 
 .message button {
-  width: 100%;
+  flex: 0 0 auto;
 }
 
 .message small {
