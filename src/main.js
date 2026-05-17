@@ -1,7 +1,8 @@
 import './styles.css';
+import heroPhoto from './assets/main-photo.jpg';
 
 const gallery = [
-  'https://images.unsplash.com/photo-1523438885200-e635ba2c371e?auto=format&fit=crop&w=1200&q=80',
+  heroPhoto,
   'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80',
   'https://images.unsplash.com/photo-1529634597503-139d3726fed5?auto=format&fit=crop&w=1200&q=80'
 ];
@@ -23,7 +24,9 @@ const text = {
   addressLabel: '\uc8fc\uc18c',
   addressValue: '61955 \uad11\uc8fc \uc11c\uad6c \uc0c1\ubb34\ub204\ub9ac\ub85c 55',
   call: '\uc804\ud654\ud558\uae30',
-  map: '\uc624\uc2dc\ub294 \uae38',
+  detail: '\uc0c1\uc138 \uc548\ub0b4',
+  naver: '\ub124\uc774\ubc84 \uc9c0\ub3c4',
+  kakao: '\uce74\uce74\uc624 \uc9c0\ub3c4',
   galleryLabel: '\uc0ac\uc9c4',
   galleryAlt: '\uc6e8\ub529 \ubd84\uc704\uae30 \uc0ac\uc9c4',
   giftTitle: '\ub9c8\uc74c \uc804\ud558\uc2e4 \uacf3',
@@ -61,8 +64,8 @@ document.querySelector('#app').innerHTML = `
       <p>${text.intro1}</p>
       <p>${text.intro2}</p>
       <div class="names">
-        <span>${text.family1}</span>
-        <span>${text.family2}</span>
+        <span><strong>\ud83e\udd35 ${text.family1}</strong></span>
+        <span><strong>\ud83d\udc70 ${text.family2}</strong></span>
       </div>
     </section>
 
@@ -83,8 +86,10 @@ document.querySelector('#app').innerHTML = `
         </div>
       </dl>
       <div class="actions">
-        <a href="tel:062-610-7000">${text.call}</a>
-        <a href="https://www.higwangju.com/index.php?cate=001002" target="_blank" rel="noreferrer">${text.map}</a>
+        <a href="tel:062-610-7000"><span aria-hidden="true">\u260e</span>${text.call}</a>
+        <a href="https://www.higwangju.com/index.php?cate=001002" target="_blank" rel="noreferrer"><span aria-hidden="true">\u2139</span>${text.detail}</a>
+        <a href="https://naver.me/xRhEBct3" target="_blank" rel="noreferrer"><span aria-hidden="true">N</span>${text.naver}</a>
+        <a href="https://place.map.kakao.com/19925119" target="_blank" rel="noreferrer"><span aria-hidden="true">K</span>${text.kakao}</a>
       </div>
     </section>
 
