@@ -3,8 +3,29 @@ import heroPhoto from './assets/main-photo.jpg';
 
 const gallery = [
   heroPhoto,
-  'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80',
-  'https://images.unsplash.com/photo-1529634597503-139d3726fed5?auto=format&fit=crop&w=1200&q=80'
+];
+
+const galleryItems = [
+  {
+    src: 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80',
+    label: 'sunny update \uc608\uc815 01'
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1529634597503-139d3726fed5?auto=format&fit=crop&w=1200&q=80',
+    label: 'sunny update \uc608\uc815 02'
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=1200&q=80',
+    label: 'sunny update \uc608\uc815 03'
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1502635385003-ee1e6a1a742d?auto=format&fit=crop&w=1200&q=80',
+    label: 'sunny update \uc608\uc815 04'
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=1200&q=80',
+    label: 'sunny update \uc608\uc815 05'
+  }
 ];
 
 const text = {
@@ -94,7 +115,21 @@ document.querySelector('#app').innerHTML = `
     </section>
 
     <section class="gallery section" aria-label="${text.galleryLabel}">
-      ${gallery.map((src, index) => `<img src="${src}" alt="${text.galleryAlt} ${index + 1}" />`).join('')}
+      <h2>${text.galleryLabel}</h2>
+      <div class="gallery__thumbs" aria-label="\uc0ac\uc9c4 \uc378\ub124\uc77c">
+        ${galleryItems.map((item, index) => `
+          <button class="gallery__thumb${index === 0 ? ' is-active' : ''}" type="button" data-gallery-index="${index}" aria-label="${text.galleryAlt} ${index + 1}">
+            <img src="${item.src}" alt="" />
+            <span>${index + 1}</span>
+          </button>
+        `).join('')}
+      </div>
+      <div class="gallery__viewer">
+        <button class="gallery__nav gallery__nav--prev" type="button" data-gallery-prev aria-label="\uc774\uc804 \uc0ac\uc9c4">\u2039</button>
+        <img class="gallery__main" src="${galleryItems[0].src}" alt="${text.galleryAlt} 1" />
+        <div class="gallery__badge">${galleryItems[0].label}</div>
+        <button class="gallery__nav gallery__nav--next" type="button" data-gallery-next aria-label="\ub2e4\uc74c \uc0ac\uc9c4">\u203a</button>
+      </div>
     </section>
 
     <section class="message section">
@@ -128,4 +163,35 @@ document.querySelectorAll('[data-account-index]').forEach((button) => {
       status.textContent = text.copyFailed;
     }
   });
+});
+
+let activeGalleryIndex = 0;
+const galleryMain = document.querySelector('.gallery__main');
+const galleryBadge = document.querySelector('.gallery__badge');
+const galleryThumbs = [...document.querySelectorAll('[data-gallery-index]')];
+
+const setGalleryImage = (index) => {
+  activeGalleryIndex = (index + galleryItems.length) % galleryItems.length;
+  const item = galleryItems[activeGalleryIndex];
+
+  galleryMain.src = item.src;
+  galleryMain.alt = `${text.galleryAlt} ${activeGalleryIndex + 1}`;
+  galleryBadge.textContent = item.label;
+  galleryThumbs.forEach((thumb, thumbIndex) => {
+    thumb.classList.toggle('is-active', thumbIndex === activeGalleryIndex);
+  });
+};
+
+galleryThumbs.forEach((thumb) => {
+  thumb.addEventListener('click', () => {
+    setGalleryImage(Number(thumb.dataset.galleryIndex));
+  });
+});
+
+document.querySelector('[data-gallery-prev]').addEventListener('click', () => {
+  setGalleryImage(activeGalleryIndex - 1);
+});
+
+document.querySelector('[data-gallery-next]').addEventListener('click', () => {
+  setGalleryImage(activeGalleryIndex + 1);
 });

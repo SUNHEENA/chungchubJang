@@ -209,16 +209,115 @@ button:hover {
 
 .gallery {
   display: grid;
-  gap: 12px;
+  gap: 16px;
   padding-top: 0;
 }
 
-.gallery img {
+.gallery h2 {
+  margin-bottom: 2px;
+  text-align: center;
+}
+
+.gallery__thumbs {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 7px;
+}
+
+.gallery__thumb {
+  position: relative;
+  min-height: 64px;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 7px;
+  border-color: rgba(151, 182, 198, 0.42);
+  background: #edf5f8;
+  box-shadow: 0 8px 18px rgba(63, 84, 99, 0.08);
+}
+
+.gallery__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.82) brightness(1.04);
+}
+
+.gallery__thumb span {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.82);
+  color: #476170;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.gallery__thumb.is-active {
+  border-color: #6e9eb7;
+  box-shadow: 0 0 0 2px rgba(110, 158, 183, 0.24), 0 10px 22px rgba(63, 84, 99, 0.12);
+}
+
+.gallery__viewer {
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #edf5f8;
+  box-shadow: 0 18px 36px rgba(64, 83, 96, 0.14);
+}
+
+.gallery__main {
+  display: block;
   width: 100%;
   aspect-ratio: 4 / 5;
   object-fit: cover;
-  border-radius: 6px;
-  box-shadow: 0 14px 32px rgba(64, 83, 96, 0.12);
+  filter: saturate(0.9) brightness(1.03);
+}
+
+.gallery__badge {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  padding: 9px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.82);
+  color: #344650;
+  font-size: 13px;
+  font-weight: 800;
+  box-shadow: 0 8px 20px rgba(43, 61, 73, 0.16);
+  backdrop-filter: blur(8px);
+}
+
+.gallery__nav {
+  position: absolute;
+  top: 50%;
+  z-index: 1;
+  width: 40px;
+  min-height: 40px;
+  border-radius: 999px;
+  padding: 0;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.76);
+  color: #344650;
+  font-size: 30px;
+  line-height: 1;
+}
+
+.gallery__nav:hover {
+  transform: translateY(-50%) scale(1.04);
+}
+
+.gallery__nav--prev {
+  left: 12px;
+}
+
+.gallery__nav--next {
+  right: 12px;
 }
 
 .message {
