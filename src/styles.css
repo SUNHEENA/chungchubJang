@@ -177,6 +177,20 @@ button {
   color: #5f5146;
 }
 
+.accounts {
+  display: grid;
+  gap: 14px;
+}
+
+.account {
+  display: grid;
+  gap: 10px;
+}
+
+.account p {
+  margin: 0;
+}
+
 .message button {
   width: 100%;
 }
