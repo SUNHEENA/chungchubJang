@@ -170,7 +170,7 @@ document.querySelector('#app').innerHTML = `
         <section>
           <h4>${text.busTitle}</h4>
           <p>5.18\uacf5\uc6d0\u00b7\uae40\ub300\uc911\ucee8\ubca4\uc158\uc13c\ud130\uc5ed\u00b7\ubcf4\ud6c8\ud68c\uad00 \uc815\ub958\uc7a5 \ub3c4\ubcf4\ub85c 4\ubd84</p>
-          <p>\uc21c\ud65801, \uc88c\uc11d02, \uc77c\uace1388, \uc0c1\ubb3463, \uc0c1\ubb3464, 518</p>
+          <p>\uc21c\ud65801, \uc88c\uc11d02, \uc77c\uace138, \uc0c1\ubb3463, \uc0c1\ubb3464, 518</p>
         </section>
         <section>
           <h4>${text.trainTitle}</h4>
