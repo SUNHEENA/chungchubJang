@@ -162,11 +162,49 @@ dd {
   line-height: 1.6;
 }
 
+dd span {
+  display: block;
+}
+
+.copy-inline {
+  min-height: 34px;
+  margin-top: 8px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+.map-preview {
+  position: relative;
+  overflow: hidden;
+  height: 210px;
+  margin-top: 26px;
+  border: 1px solid rgba(151, 182, 198, 0.38);
+  border-radius: 10px;
+  background: #edf5f8;
+  box-shadow: 0 16px 34px rgba(64, 83, 96, 0.12);
+}
+
+.map-preview iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+  filter: saturate(0.86) contrast(0.98);
+}
+
 .actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
   margin-top: 30px;
+}
+
+.details__status {
+  display: block;
+  min-height: 22px;
+  margin-top: 12px;
+  color: #6d808b;
+  text-align: center;
 }
 
 .actions a,

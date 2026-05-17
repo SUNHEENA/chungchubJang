@@ -44,6 +44,8 @@ const text = {
   placeValue: '\ud640\ub9ac\ub370\uc774\uc778 \uad11\uc8fc',
   addressLabel: '\uc8fc\uc18c',
   addressValue: '61955 \uad11\uc8fc \uc11c\uad6c \uc0c1\ubb34\ub204\ub9ac\ub85c 55',
+  addressCopy: '\uc8fc\uc18c \ubcf5\uc0ac',
+  addressCopied: '\uc8fc\uc18c\uac00 \ubcf5\uc0ac\ub418\uc5c8\uc2b5\ub2c8\ub2e4.',
   call: '\uc804\ud654\ud558\uae30',
   detail: '\uc0c1\uc138 \uc548\ub0b4',
   naver: '\ub124\uc774\ubc84 \uc9c0\ub3c4',
@@ -68,6 +70,8 @@ const accounts = [
     holder: '\uc774\uc9c0\uc218'
   }
 ];
+
+const mapQuery = encodeURIComponent('\ud640\ub9ac\ub370\uc774 \uc778 \uad11\uc8fc \uad11\uc8fc\uad11\uc5ed\uc2dc \uc11c\uad6c \uce58\ud3c9\ub3d9 \uc0c1\ubb34\ub204\ub9ac\ub85c 55');
 
 document.querySelector('#app').innerHTML = `
   <main class="invite">
@@ -103,15 +107,27 @@ document.querySelector('#app').innerHTML = `
         </div>
         <div>
           <dt>${text.addressLabel}</dt>
-          <dd>${text.addressValue}</dd>
+          <dd>
+            <span>${text.addressValue}</span>
+            <button class="copy-inline" type="button" data-copy-address>${text.addressCopy}</button>
+          </dd>
         </div>
       </dl>
+      <div class="map-preview">
+        <iframe
+          title="\ud640\ub9ac\ub370\uc774 \uc778 \uad11\uc8fc \uc9c0\ub3c4"
+          src="https://www.google.com/maps?q=${mapQuery}&output=embed"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+        ></iframe>
+      </div>
       <div class="actions">
         <a href="tel:062-610-7000"><span aria-hidden="true">\u260e</span>${text.call}</a>
         <a href="https://www.higwangju.com/index.php?cate=001002" target="_blank" rel="noreferrer"><span aria-hidden="true">\u2139</span>${text.detail}</a>
         <a href="https://naver.me/xRhEBct3" target="_blank" rel="noreferrer"><span aria-hidden="true">N</span>${text.naver}</a>
         <a href="https://place.map.kakao.com/19925119" target="_blank" rel="noreferrer"><span aria-hidden="true">K</span>${text.kakao}</a>
       </div>
+      <small class="details__status" aria-live="polite"></small>
     </section>
 
     <section class="gallery section" aria-label="${text.galleryLabel}">
@@ -163,6 +179,17 @@ document.querySelectorAll('[data-account-index]').forEach((button) => {
       status.textContent = text.copyFailed;
     }
   });
+});
+
+document.querySelector('[data-copy-address]').addEventListener('click', async () => {
+  const status = document.querySelector('.details__status');
+
+  try {
+    await navigator.clipboard.writeText(`${text.placeValue} ${text.addressValue}`);
+    status.textContent = text.addressCopied;
+  } catch {
+    status.textContent = text.copyFailed;
+  }
 });
 
 let activeGalleryIndex = 0;
