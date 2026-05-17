@@ -13,17 +13,17 @@ const text = {
   groom: '\ub098\uc120\ud76c',
   intro1: '\uc11c\ub85c\uc758 \uacc4\uc808\uc774 \ub418\uc5b4\uc900 \ub450 \uc0ac\ub78c\uc774 \uc774\uc81c \uac19\uc740 \uae38 \uc704\uc5d0\uc11c \uc0c8\ub85c\uc6b4 \ud558\ub8e8\ub97c \uc2dc\uc791\ud569\ub2c8\ub2e4.',
   intro2: '\uc18c\uc911\ud55c \uac78\uc74c\uc73c\ub85c \ud568\uaed8 \ucd95\ubcf5\ud574 \uc8fc\uc138\uc694.',
-  family1: '\uc815\ubbfc\uc218 \u00b7 \uae40\ud61c\uc9c4\uc758 \uc7a5\ub140 \uc9c0\uc218',
-  family2: '\uc7a5\ud0dc\ud6c8 \u00b7 \ubc15\uc120\uc601\uc758 \uc7a5\ub0a8 \uc120\ud76c',
+  family1: '\ub098\ucc3d\uaddc \u00b7 \uae40\uc625\ub840\uc758 \uc7a5\ub0a8 \uc120\ud76c',
+  family2: '\ubc15\ucc2c\uc219\uc758 \ucc28\ub140 \uc9c0\uc218',
   details: '\uc608\uc2dd \uc548\ub0b4',
   dateLabel: '\uc77c\uc2dc',
-  dateValue: '2026\ub144 6\uc6d4 20\uc77c \ud1a0\uc694\uc77c \ub0ae 12\uc2dc 30\ubd84',
+  dateValue: '2026\ub144 10\uc6d4 25\uc77c \uc77c\uc694\uc77c \uc624\ud6c4 2\uc2dc',
   placeLabel: '\uc7a5\uc18c',
-  placeValue: '\ub77c\uc6c0\uc544\ud2b8\uc13c\ud130 2\uce35 \ub9c8\uc81c\uc2a4\ud2f1 \ubcfc\ub8f8',
+  placeValue: '\ud640\ub9ac\ub370\uc774\uc778 \uad11\uc8fc',
   addressLabel: '\uc8fc\uc18c',
-  addressValue: '\uc11c\uc6b8 \uac15\ub0a8\uad6c \uc5b8\uc8fc\ub85c 564',
+  addressValue: '61955 \uad11\uc8fc \uc11c\uad6c \uc0c1\ubb34\ub204\ub9ac\ub85c 55',
   call: '\uc804\ud654\ud558\uae30',
-  map: '\uc9c0\ub3c4\ubcf4\uae30',
+  map: '\uc624\uc2dc\ub294 \uae38',
   galleryLabel: '\uc0ac\uc9c4',
   galleryAlt: '\uc6e8\ub529 \ubd84\uc704\uae30 \uc0ac\uc9c4',
   giftTitle: '\ub9c8\uc74c \uc804\ud558\uc2e4 \uacf3',
@@ -32,7 +32,18 @@ const text = {
   copyFailed: '\ubcf5\uc0ac\ud560 \uc218 \uc5c6\uc5b4 \uacc4\uc88c\ub97c \uc9c1\uc811 \uc120\ud0dd\ud574 \uc8fc\uc138\uc694.'
 };
 
-const accountText = '\uc2e0\ud55c 110-000-000000 \ub098\uc120\ud76c';
+const accounts = [
+  {
+    bank: '\uad6d\ubbfc',
+    number: '740502-66-064797',
+    holder: '\ub098\uc120\ud76c'
+  },
+  {
+    bank: '\uc2e0\ud55c',
+    number: '110-509-767604',
+    holder: '\uc774\uc9c0\uc218'
+  }
+];
 
 document.querySelector('#app').innerHTML = `
   <main class="invite">
@@ -41,8 +52,8 @@ document.querySelector('#app').innerHTML = `
       <div class="hero__shade"></div>
       <div class="hero__copy">
         <p class="eyebrow">Wedding Invitation</p>
-        <h1>${text.bride}<br />${text.groom}</h1>
-        <p class="date">2026. 06. 20 SAT 12:30</p>
+        <h1>${text.groom}<br />${text.bride}</h1>
+        <p class="date">2026. 10. 25 SUN 14:00</p>
       </div>
     </section>
 
@@ -72,8 +83,8 @@ document.querySelector('#app').innerHTML = `
         </div>
       </dl>
       <div class="actions">
-        <a href="tel:010-0000-0000">${text.call}</a>
-        <a href="https://map.naver.com/p/search/%EB%9D%BC%EC%9B%80%EC%95%84%ED%8A%B8%EC%84%BC%ED%84%B0" target="_blank" rel="noreferrer">${text.map}</a>
+        <a href="tel:062-610-7000">${text.call}</a>
+        <a href="https://www.higwangju.com/index.php?cate=001002" target="_blank" rel="noreferrer">${text.map}</a>
       </div>
     </section>
 
@@ -83,20 +94,33 @@ document.querySelector('#app').innerHTML = `
 
     <section class="message section">
       <h2>${text.giftTitle}</h2>
-      <p>${accountText}</p>
-      <button type="button" id="copyAccount">${text.copy}</button>
+      <div class="accounts">
+        ${accounts.map((account, index) => {
+          const accountText = `${account.bank} ${account.number} ${account.holder}`;
+          return `
+            <div class="account">
+              <p>${accountText}</p>
+              <button type="button" data-account-index="${index}">${text.copy}</button>
+            </div>
+          `;
+        }).join('')}
+      </div>
       <small id="copyStatus" aria-live="polite"></small>
     </section>
   </main>
 `;
 
-document.querySelector('#copyAccount').addEventListener('click', async () => {
-  const status = document.querySelector('#copyStatus');
+document.querySelectorAll('[data-account-index]').forEach((button) => {
+  button.addEventListener('click', async () => {
+    const status = document.querySelector('#copyStatus');
+    const account = accounts[Number(button.dataset.accountIndex)];
+    const accountText = `${account.bank} ${account.number} ${account.holder}`;
 
-  try {
-    await navigator.clipboard.writeText(accountText);
-    status.textContent = text.copied;
-  } catch {
-    status.textContent = text.copyFailed;
-  }
+    try {
+      await navigator.clipboard.writeText(accountText);
+      status.textContent = text.copied;
+    } catch {
+      status.textContent = text.copyFailed;
+    }
+  });
 });
