@@ -1,5 +1,6 @@
 import './styles.css';
 import heroPhoto from './assets/main-photo.jpg';
+import weddingMusic from './assets/wedding-music.ogg';
 
 const gallery = [
   heroPhoto,
@@ -83,6 +84,7 @@ const mapQuery = encodeURIComponent('\ud640\ub9ac\ub370\uc774 \uc778 \uad11\uc8f
 document.querySelector('#app').innerHTML = `
   <main class="invite">
     <button class="music-toggle" type="button" data-music-toggle aria-label="\ubc30\uacbd\uc74c\uc545 \uc7ac\uc0dd">\u25b6</button>
+    <audio data-wedding-music src="${weddingMusic}" preload="metadata" loop></audio>
     <section class="hero" aria-label="${text.ariaHero}">
       <img class="hero__image" src="${gallery[0]}" alt="${text.heroAlt}" />
       <div class="hero__shade"></div>
@@ -251,56 +253,29 @@ const updateCountdown = () => {
 updateCountdown();
 setInterval(updateCountdown, 60000);
 
-let audioContext;
-let musicNodes;
 const musicToggle = document.querySelector('[data-music-toggle]');
-
-const startMusic = () => {
-  audioContext = audioContext || new AudioContext();
-  const masterGain = audioContext.createGain();
-  const filter = audioContext.createBiquadFilter();
-  const oscillators = [196, 246.94, 329.63].map((frequency, index) => {
-    const oscillator = audioContext.createOscillator();
-    const gain = audioContext.createGain();
-
-    oscillator.type = index === 1 ? 'triangle' : 'sine';
-    oscillator.frequency.value = frequency;
-    gain.gain.value = index === 0 ? 0.035 : 0.018;
-    oscillator.connect(gain).connect(filter);
-    oscillator.start();
-    return oscillator;
-  });
-
-  filter.type = 'lowpass';
-  filter.frequency.value = 780;
-  masterGain.gain.value = 0.42;
-  filter.connect(masterGain).connect(audioContext.destination);
-  musicNodes = { masterGain, oscillators };
-  musicToggle.textContent = '\u275a\u275a';
-  musicToggle.setAttribute('aria-label', '\ubc30\uacbd\uc74c\uc545 \uc815\uc9c0');
-};
+const weddingAudio = document.querySelector('[data-wedding-music]');
 
 const stopMusic = () => {
-  if (!musicNodes) {
-    return;
-  }
-
-  musicNodes.masterGain.gain.setTargetAtTime(0, audioContext.currentTime, 0.08);
-  window.setTimeout(() => {
-    musicNodes.oscillators.forEach((oscillator) => oscillator.stop());
-    musicNodes = null;
-  }, 220);
+  weddingAudio.pause();
   musicToggle.textContent = '\u25b6';
   musicToggle.setAttribute('aria-label', '\ubc30\uacbd\uc74c\uc545 \uc7ac\uc0dd');
 };
 
 musicToggle.addEventListener('click', async () => {
-  if (musicNodes) {
+  if (!weddingAudio.paused) {
     stopMusic();
     return;
   }
 
-  startMusic();
+  try {
+    weddingAudio.volume = 0.32;
+    await weddingAudio.play();
+    musicToggle.textContent = '\u275a\u275a';
+    musicToggle.setAttribute('aria-label', '\ubc30\uacbd\uc74c\uc545 \uc815\uc9c0');
+  } catch {
+    stopMusic();
+  }
 });
 
 document.querySelector('[data-copy-address]').addEventListener('click', async () => {
