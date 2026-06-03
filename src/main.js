@@ -84,7 +84,7 @@ const mapQuery = encodeURIComponent('\ud640\ub9ac\ub370\uc774 \uc778 \uad11\uc8f
 document.querySelector('#app').innerHTML = `
   <main class="invite">
     <button class="music-toggle" type="button" data-music-toggle aria-label="\ubc30\uacbd\uc74c\uc545 \uc7ac\uc0dd">\u25b6</button>
-    <audio data-wedding-music src="${weddingMusic}" preload="metadata" loop></audio>
+    <audio data-wedding-music src="${weddingMusic}" preload="auto" autoplay loop playsinline></audio>
     <section class="hero" aria-label="${text.ariaHero}">
       <img class="hero__image" src="${gallery[0]}" alt="${text.heroAlt}" />
       <div class="hero__shade"></div>
@@ -256,10 +256,21 @@ setInterval(updateCountdown, 60000);
 const musicToggle = document.querySelector('[data-music-toggle]');
 const weddingAudio = document.querySelector('[data-wedding-music]');
 
+const setMusicPlaying = () => {
+  musicToggle.textContent = '\u275a\u275a';
+  musicToggle.setAttribute('aria-label', '\ubc30\uacbd\uc74c\uc545 \uc815\uc9c0');
+};
+
 const stopMusic = () => {
   weddingAudio.pause();
   musicToggle.textContent = '\u25b6';
   musicToggle.setAttribute('aria-label', '\ubc30\uacbd\uc74c\uc545 \uc7ac\uc0dd');
+};
+
+const playMusic = async () => {
+  weddingAudio.volume = 0.32;
+  await weddingAudio.play();
+  setMusicPlaying();
 };
 
 musicToggle.addEventListener('click', async () => {
@@ -269,13 +280,26 @@ musicToggle.addEventListener('click', async () => {
   }
 
   try {
-    weddingAudio.volume = 0.32;
-    await weddingAudio.play();
-    musicToggle.textContent = '\u275a\u275a';
-    musicToggle.setAttribute('aria-label', '\ubc30\uacbd\uc74c\uc545 \uc815\uc9c0');
+    await playMusic();
   } catch {
     stopMusic();
   }
+});
+
+const autoplayMusic = () => {
+  playMusic().catch(() => {});
+};
+
+autoplayMusic();
+
+['pointerdown', 'touchstart', 'keydown', 'scroll'].forEach((eventName) => {
+  window.addEventListener(eventName, (event) => {
+    if (!weddingAudio.paused || event.target?.closest?.('[data-music-toggle]')) {
+      return;
+    }
+
+    autoplayMusic();
+  }, { once: true, passive: true });
 });
 
 document.querySelector('[data-copy-address]').addEventListener('click', async () => {
