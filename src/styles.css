@@ -583,6 +583,69 @@ button {
   font-size: 13px;
 }
 
+.site-credit {
+  padding: 34px 30px 42px;
+  border-top: 1px solid #eee8e2;
+  background: #faf9f7;
+  color: #8d8076;
+  text-align: center;
+}
+
+.site-credit p {
+  margin: 0 0 12px;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 15px;
+  letter-spacing: 0.14em;
+  text-transform: lowercase;
+}
+
+.site-credit a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  color: #8d8076;
+  font-size: 12px;
+}
+
+.site-credit small {
+  color: #a89c92;
+  font-size: 12px;
+}
+
+.bug-icon {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  border: 1.4px solid #c8b7a6;
+  border-radius: 50% 50% 44% 44%;
+}
+
+.bug-icon::before,
+.bug-icon::after {
+  content: "";
+  position: absolute;
+}
+
+.bug-icon::before {
+  left: 50%;
+  top: 3px;
+  width: 1px;
+  height: 11px;
+  background: #c8b7a6;
+  transform: translateX(-50%);
+}
+
+.bug-icon::after {
+  left: 4px;
+  top: 5px;
+  width: 8px;
+  height: 8px;
+  border-top: 1.2px solid #c8b7a6;
+  border-bottom: 1.2px solid #c8b7a6;
+}
+
 .lightbox {
   width: min(100vw, 480px);
   max-width: none;

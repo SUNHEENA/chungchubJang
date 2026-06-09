@@ -245,6 +245,15 @@ document.querySelector('#app').innerHTML = `
       `).join('')}
       <small class="status" data-account-status aria-live="polite"></small>
     </section>
+
+    <footer class="site-credit reveal">
+      <p>made by sun</p>
+      <a href="mailto:skould@naver.com?subject=Wedding%20Invitation%20Bug%20Report" aria-label="버그 리포팅 메일 보내기">
+        <span class="bug-icon" aria-hidden="true"></span>
+        <span>버그 리포팅</span>
+        <small>skould@naver.com</small>
+      </a>
+    </footer>
   </main>
 
   <dialog class="lightbox" data-lightbox>
