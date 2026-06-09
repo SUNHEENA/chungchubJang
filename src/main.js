@@ -14,6 +14,7 @@ const wedding = {
   weekday: 'Sunday',
   time: '2:00 PM',
   venue: '홀리데이인 광주',
+  hall: '3층 로즈홀',
   address: '61955 광주 서구 상무누리로 55',
   phone: '062-610-7000',
   detailUrl: 'https://www.higwangju.com/index.php?cate=001002',
@@ -31,10 +32,7 @@ const accounts = {
 };
 
 const galleryItems = [
-  {
-    src: heroPhoto,
-    label: 'sunny update 예정 01'
-  },
+  { src: heroPhoto, label: 'sunny update 예정 01' },
   {
     src: 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=82',
     label: 'sunny update 예정 02'
@@ -102,6 +100,7 @@ document.querySelector('#app').innerHTML = `
       <p>${wedding.weekday}</p>
       <p>${wedding.time}</p>
       <strong>${wedding.venue}</strong>
+      <span class="hall-name">${wedding.hall}</span>
     </section>
 
     <section class="section calendar reveal" aria-label="예식 달력">
@@ -169,6 +168,13 @@ document.querySelector('#app').innerHTML = `
         <section>
           <span class="line-icon" aria-hidden="true"></span>
           <div>
+            <h3>장소</h3>
+            <p>${wedding.venue} ${wedding.hall}</p>
+          </div>
+        </section>
+        <section>
+          <span class="line-icon" aria-hidden="true"></span>
+          <div>
             <h3>주소</h3>
             <p>${wedding.address}</p>
             <button class="text-button" type="button" data-copy-address>주소 복사</button>
@@ -225,24 +231,19 @@ document.querySelector('#app').innerHTML = `
               <dl>
                 <div><dt>은행</dt><dd>${account.bank}</dd></div>
                 <div><dt>예금주</dt><dd>${account.holder}</dd></div>
-                <div><dt>계좌번호</dt><dd>${account.number}</dd></div>
+                <div>
+                  <dt>계좌번호</dt>
+                  <dd class="account-number">
+                    <span>${account.number}</span>
+                    <button class="copy-icon" type="button" data-copy-account="${side}-${index}" aria-label="계좌번호 복사">⎘</button>
+                  </dd>
+                </div>
               </dl>
-              <div class="account-actions">
-                <button type="button" data-copy-account="${side}-${index}">복사</button>
-                <button type="button" data-kakao-pay>카카오페이 송금</button>
-              </div>
             </div>
           `).join('')}
         </details>
       `).join('')}
       <small class="status" data-account-status aria-live="polite"></small>
-    </section>
-
-    <section class="section rsvp reveal" aria-label="참석 의사 전달">
-      <p class="section-kicker">RSVP</p>
-      <h2>참석 의사를 전달해 주세요</h2>
-      <button class="rsvp-button" type="button" data-rsvp>참석 의사 전달하기</button>
-      <small class="status" data-rsvp-status aria-live="polite"></small>
     </section>
   </main>
 
@@ -343,7 +344,7 @@ const copyText = async (value, statusElement, successMessage) => {
 };
 
 document.querySelector('[data-copy-address]').addEventListener('click', () => {
-  copyText(`${wedding.venue} ${wedding.address}`, document.querySelector('[data-location-status]'), '주소가 복사되었습니다.');
+  copyText(`${wedding.venue} ${wedding.hall} ${wedding.address}`, document.querySelector('[data-location-status]'), '주소가 복사되었습니다.');
 });
 
 document.querySelectorAll('[data-copy-account]').forEach((button) => {
@@ -352,16 +353,6 @@ document.querySelectorAll('[data-copy-account]').forEach((button) => {
     const account = accounts[side][Number(index)];
     copyText(`${account.bank} ${account.number} ${account.holder}`, document.querySelector('[data-account-status]'), '계좌번호가 복사되었습니다.');
   });
-});
-
-document.querySelectorAll('[data-kakao-pay]').forEach((button) => {
-  button.addEventListener('click', () => {
-    document.querySelector('[data-account-status]').textContent = '카카오페이 송금 링크는 추후 연결 예정입니다.';
-  });
-});
-
-document.querySelector('[data-rsvp]').addEventListener('click', () => {
-  document.querySelector('[data-rsvp-status]').textContent = '참석 의사 전달 링크는 추후 연결 예정입니다.';
 });
 
 document.querySelector('[data-video-placeholder]').addEventListener('click', () => {
