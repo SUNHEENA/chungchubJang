@@ -139,18 +139,6 @@ document.querySelector('#app').innerHTML = `
       </div>
     </section>
 
-    <section class="section video reveal" aria-label="웨딩 영상">
-      <div class="section-heading">
-        <span>Film</span>
-        <h2>Wedding Film</h2>
-      </div>
-      <div class="video-frame">
-        <img src="${heroPhoto}" alt="웨딩 영상 썸네일" />
-        <button type="button" data-video-placeholder aria-label="영상 재생">▶</button>
-      </div>
-      <p class="muted" data-video-status>영상은 추후 업데이트 예정입니다.</p>
-    </section>
-
     <section class="section location reveal" aria-label="오시는 길">
       <div class="section-heading">
         <span>Location</span>
@@ -249,8 +237,7 @@ document.querySelector('#app').innerHTML = `
     <footer class="site-credit reveal">
       <p>made by sun</p>
       <a href="mailto:skould@naver.com?subject=Wedding%20Invitation%20Bug%20Report" aria-label="버그 리포팅 메일 보내기">
-        <span class="bug-icon" aria-hidden="true"></span>
-        <span>버그 리포팅</span>
+        <span>🐞 버그 리포팅</span>
         <small>skould@naver.com</small>
       </a>
     </footer>
