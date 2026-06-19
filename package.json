@@ -1,0 +1,12 @@
+{
+  "name": "chungchub-jang-mobile-invitation",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/dev-server.mjs",
+    "build": "node scripts/build.mjs",
+    "preview": "node scripts/dev-server.mjs dist",
+    "lint": "node --check src/app.js && node --check src/invitationData.js && node --check api/rsvp.js && node --check scripts/build.mjs && node --check scripts/dev-server.mjs"
+  }
+}

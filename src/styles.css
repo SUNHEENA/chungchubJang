@@ -1,0 +1,344 @@
+@import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Playfair+Display:wght@600;700&display=swap');
+
+:root {
+  color: #483b35;
+  background: #f8efe9;
+  font-family: 'Gowun Dodum', system-ui, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.9), transparent 30rem),
+    linear-gradient(180deg, #f7e9df 0%, #fff8f3 52%, #efe4db 100%);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+main {
+  width: min(100%, 480px);
+  margin: 0 auto;
+  padding: 18px 14px 42px;
+}
+
+.section-card {
+  margin: 0 0 18px;
+  overflow: hidden;
+  border: 1px solid rgba(132, 95, 76, 0.15);
+  border-radius: 28px;
+  background: rgba(255, 252, 249, 0.86);
+  box-shadow: 0 18px 45px rgba(91, 59, 42, 0.12);
+  backdrop-filter: blur(14px);
+}
+
+.hero {
+  position: relative;
+  min-height: 680px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.hero-image {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, transparent 40%, rgba(45, 32, 25, 0.68) 100%),
+    url('https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=85') center/cover;
+}
+
+.hero-content {
+  position: relative;
+  width: 100%;
+  padding: 42px 28px;
+  color: #fff9f4;
+  text-align: center;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: #b88972;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.hero-content .eyebrow {
+  color: #f5d1c0;
+}
+
+h1,
+h2 {
+  margin: 0;
+  color: #4d3025;
+  font-family: 'Playfair Display', 'Gowun Dodum', serif;
+}
+
+.hero h1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  color: #fff;
+  font-size: clamp(3rem, 16vw, 5.6rem);
+  line-height: 1;
+}
+
+.hero-date,
+.hero-place {
+  margin: 14px 0 0;
+  font-size: 1rem;
+}
+
+.dday {
+  display: inline-flex;
+  margin-top: 24px;
+  padding: 10px 22px;
+  border: 1px solid rgba(255, 255, 255, 0.48);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  font-weight: 700;
+}
+
+.greeting,
+.calendar,
+.gallery,
+.location,
+.account,
+.rsvp {
+  padding: 30px 24px;
+}
+
+.greeting {
+  text-align: center;
+}
+
+.greeting h2,
+.section-title h2 {
+  font-size: 1.65rem;
+}
+
+.greeting > p:not(.eyebrow) {
+  margin: 24px 0;
+  color: #705b51;
+  font-size: 1.05rem;
+  line-height: 1.9;
+}
+
+.family {
+  padding-top: 18px;
+  border-top: 1px solid #ead9cf;
+  color: #67564f;
+  line-height: 1.8;
+}
+
+.quick-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  padding: 18px;
+}
+
+.quick-actions a,
+.map-buttons a,
+.rsvp button,
+.account button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  border: 0;
+  border-radius: 16px;
+  background: #8e604d;
+  color: #fff9f4;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.quick-actions a:hover,
+.map-buttons a:hover,
+.rsvp button:hover,
+.account button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(142, 96, 77, 0.22);
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.section-title > svg {
+  flex: 0 0 auto;
+  color: #b88972;
+}
+
+.calendar-box {
+  display: grid;
+  place-items: center;
+  min-height: 210px;
+  border-radius: 24px;
+  background: linear-gradient(145deg, #fff7f2, #ead5c9);
+}
+
+.calendar-box span,
+.calendar-box em {
+  color: #8e604d;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.calendar-box strong {
+  color: #4d3025;
+  font-family: 'Playfair Display', serif;
+  font-size: 6rem;
+  line-height: 0.9;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.gallery-grid img {
+  width: 100%;
+  aspect-ratio: 1 / 1.18;
+  border-radius: 18px;
+  object-fit: cover;
+}
+
+.map-card {
+  padding: 20px;
+  border-radius: 22px;
+  background: #f4e4da;
+  line-height: 1.7;
+}
+
+.map-card p {
+  margin: 0 0 6px;
+}
+
+.venue-name {
+  color: #4d3025;
+  font-weight: 800;
+}
+
+.map-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 14px 0;
+}
+
+.transport {
+  margin: 14px 0 0;
+  padding-left: 20px;
+  color: #705b51;
+  line-height: 1.75;
+}
+
+.account {
+  display: grid;
+  gap: 12px;
+}
+
+.account .section-title {
+  margin-bottom: 8px;
+}
+
+.account button {
+  justify-content: flex-start;
+  padding: 0 16px;
+  background: #fff7f2;
+  color: #64473b;
+  border: 1px solid #ead9cf;
+}
+
+.rsvp form {
+  display: grid;
+  gap: 14px;
+}
+
+.rsvp label {
+  display: grid;
+  gap: 7px;
+  color: #6a5248;
+  font-weight: 700;
+}
+
+.rsvp input,
+.rsvp select,
+.rsvp textarea {
+  width: 100%;
+  border: 1px solid #ead9cf;
+  border-radius: 14px;
+  background: #fffaf7;
+  color: #483b35;
+  padding: 13px 14px;
+  outline: none;
+}
+
+.rsvp input:focus,
+.rsvp select:focus,
+.rsvp textarea:focus {
+  border-color: #b88972;
+  box-shadow: 0 0 0 3px rgba(184, 137, 114, 0.16);
+}
+
+.rsvp button {
+  margin-top: 6px;
+}
+
+.rsvp button:disabled {
+  cursor: wait;
+  opacity: 0.72;
+}
+
+.form-message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 14px 0 0;
+  font-weight: 700;
+}
+
+.form-message.success {
+  color: #2d7a4e;
+}
+
+.form-message.error {
+  color: #b44242;
+}
+
+@media (min-width: 560px) {
+  main {
+    padding-top: 28px;
+  }
+
+  .hero {
+    min-height: 720px;
+  }
+}
