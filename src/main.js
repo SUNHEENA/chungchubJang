@@ -44,7 +44,6 @@ const galleryItems = Object.entries(galleryModules)
     filename: path.split('/').pop()
   }));
 
-const featuredGalleryItems = galleryItems.slice(0, 5);
 
 const mapQuery = encodeURIComponent('홀리데이 인 광주 광주광역시 서구 치평동 상무누리로 55');
 
@@ -123,13 +122,14 @@ document.querySelector('#app').innerHTML = `
         <span>Gallery</span>
         <h2>Our Moments</h2>
       </div>
-      <div class="gallery-note">대표 사진 5장을 먼저 보여드려요. 사진을 누르면 전체 갤러리를 넘겨볼 수 있습니다.</div>
-      <div class="gallery-thumbs">
-        ${featuredGalleryItems.map((item, index) => `
-          <button class="gallery-thumb" type="button" data-lightbox-index="${index}" aria-label="갤러리 사진 ${index + 1} 크게 보기">
-            <img src="${item.src}" alt="${item.label}" />
-          </button>
-        `).join('')}
+      <div class="gallery-note">좌우 버튼으로 사진을 넘기고, 사진을 누르면 크게 볼 수 있습니다.</div>
+      <div class="gallery-viewer" aria-live="polite">
+        <button class="gallery-nav gallery-nav--prev" type="button" data-gallery-prev aria-label="이전 사진">‹</button>
+        <button class="gallery-current" type="button" data-gallery-open aria-label="현재 갤러리 사진 크게 보기">
+          <img src="${galleryItems[0]?.src ?? heroPhoto}" alt="${galleryItems[0]?.label ?? 'Wedding Moment'}" data-gallery-image />
+        </button>
+        <button class="gallery-nav gallery-nav--next" type="button" data-gallery-next aria-label="다음 사진">›</button>
+        <p class="gallery-count" data-gallery-count>1 / ${galleryItems.length || 1}</p>
       </div>
     </section>
 
@@ -239,9 +239,7 @@ document.querySelector('#app').innerHTML = `
 
   <dialog class="lightbox" data-lightbox>
     <button class="lightbox__close" type="button" data-lightbox-close aria-label="닫기">×</button>
-    <button class="lightbox__nav lightbox__nav--prev" type="button" data-lightbox-prev aria-label="이전 사진">‹</button>
     <img data-lightbox-image alt="" />
-    <button class="lightbox__nav lightbox__nav--next" type="button" data-lightbox-next aria-label="다음 사진">›</button>
     <p data-lightbox-caption></p>
   </dialog>
 `;
@@ -347,37 +345,57 @@ document.querySelectorAll('[data-copy-account]').forEach((button) => {
   });
 });
 
-document.querySelector('[data-video-placeholder]').addEventListener('click', () => {
-  document.querySelector('[data-video-status]').textContent = '영상 파일을 주시면 이 영역에 바로 연결하겠습니다.';
-});
+const videoPlaceholder = document.querySelector('[data-video-placeholder]');
+
+if (videoPlaceholder) {
+  videoPlaceholder.addEventListener('click', () => {
+    document.querySelector('[data-video-status]').textContent = '영상 파일을 주시면 이 영역에 바로 연결하겠습니다.';
+  });
+}
 
 const lightbox = document.querySelector('[data-lightbox]');
 const lightboxImage = document.querySelector('[data-lightbox-image]');
 const lightboxCaption = document.querySelector('[data-lightbox-caption]');
-let activeLightboxIndex = 0;
+const galleryImage = document.querySelector('[data-gallery-image]');
+const galleryCount = document.querySelector('[data-gallery-count]');
+let activeGalleryIndex = 0;
+
+const showGalleryImage = (index) => {
+  if (!galleryItems.length) {
+    return;
+  }
+
+  activeGalleryIndex = (index + galleryItems.length) % galleryItems.length;
+  const item = galleryItems[activeGalleryIndex];
+
+  galleryImage.src = item.src;
+  galleryImage.alt = item.label;
+  galleryCount.textContent = `${activeGalleryIndex + 1} / ${galleryItems.length}`;
+};
 
 const showLightboxImage = (index) => {
-  activeLightboxIndex = (index + galleryItems.length) % galleryItems.length;
-  const item = galleryItems[activeLightboxIndex];
+  if (!galleryItems.length) {
+    return;
+  }
+
+  const item = galleryItems[index];
 
   lightboxImage.src = item.src;
   lightboxImage.alt = item.label;
-  lightboxCaption.textContent = `${activeLightboxIndex + 1} / ${galleryItems.length}`;
+  lightboxCaption.textContent = `${index + 1} / ${galleryItems.length}`;
 };
 
-document.querySelectorAll('[data-lightbox-index]').forEach((button) => {
-  button.addEventListener('click', () => {
-    showLightboxImage(Number(button.dataset.lightboxIndex));
-    lightbox.showModal();
-  });
+document.querySelector('[data-gallery-prev]').addEventListener('click', () => {
+  showGalleryImage(activeGalleryIndex - 1);
 });
 
-document.querySelector('[data-lightbox-prev]').addEventListener('click', () => {
-  showLightboxImage(activeLightboxIndex - 1);
+document.querySelector('[data-gallery-next]').addEventListener('click', () => {
+  showGalleryImage(activeGalleryIndex + 1);
 });
 
-document.querySelector('[data-lightbox-next]').addEventListener('click', () => {
-  showLightboxImage(activeLightboxIndex + 1);
+document.querySelector('[data-gallery-open]').addEventListener('click', () => {
+  showLightboxImage(activeGalleryIndex);
+  lightbox.showModal();
 });
 
 document.querySelector('[data-lightbox-close]').addEventListener('click', () => lightbox.close());
@@ -393,11 +411,7 @@ window.addEventListener('keydown', (event) => {
     return;
   }
 
-  if (event.key === 'ArrowLeft') {
-    showLightboxImage(activeLightboxIndex - 1);
-  }
-
-  if (event.key === 'ArrowRight') {
-    showLightboxImage(activeLightboxIndex + 1);
+  if (event.key === 'Escape') {
+    lightbox.close();
   }
 });
