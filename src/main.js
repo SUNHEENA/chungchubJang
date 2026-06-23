@@ -1,6 +1,11 @@
 import './styles.css';
-import heroPhoto from './assets/main-photo.jpg';
+import heroPhoto from './assets/hero/main.png';
 import weddingMusic from './assets/moonlight-invitation.mp3';
+
+const galleryModules = import.meta.glob('./assets/gallery/*.{jpg,jpeg,png,webp}', {
+  eager: true,
+  import: 'default'
+});
 
 const couple = {
   groom: '나선희',
@@ -31,25 +36,15 @@ const accounts = {
   ]
 };
 
-const galleryItems = [
-  { src: heroPhoto, label: 'sunny update 예정 01' },
-  {
-    src: 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=82',
-    label: 'sunny update 예정 02'
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=1200&q=82',
-    label: 'sunny update 예정 03'
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1529634597503-139d3726fed5?auto=format&fit=crop&w=1200&q=82',
-    label: 'sunny update 예정 04'
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=1200&q=82',
-    label: 'sunny update 예정 05'
-  }
-];
+const galleryItems = Object.entries(galleryModules)
+  .sort(([pathA], [pathB]) => pathA.localeCompare(pathB, undefined, { numeric: true }))
+  .map(([path, src], index) => ({
+    src,
+    label: `Wedding Moment ${index + 1}`,
+    filename: path.split('/').pop()
+  }));
+
+const featuredGalleryItems = galleryItems.slice(0, 5);
 
 const mapQuery = encodeURIComponent('홀리데이 인 광주 광주광역시 서구 치평동 상무누리로 55');
 
@@ -62,7 +57,6 @@ document.querySelector('#app').innerHTML = `
       <img class="cover__image" src="${heroPhoto}" alt="눈 내리는 풍경 속 신랑 신부 일러스트" />
       <div class="cover__veil"></div>
       <div class="cover__text">
-        <p class="cover__caption">We invite you to celebrate our love</p>
         <h1>
           <span>${couple.groom}</span>
           <em>&</em>
@@ -129,11 +123,11 @@ document.querySelector('#app').innerHTML = `
         <span>Gallery</span>
         <h2>Our Moments</h2>
       </div>
-      <div class="masonry">
-        ${galleryItems.map((item, index) => `
-          <button class="masonry__item" type="button" data-lightbox-index="${index}" aria-label="갤러리 사진 ${index + 1} 크게 보기">
+      <div class="gallery-note">대표 사진 5장을 먼저 보여드려요. 사진을 누르면 전체 갤러리를 넘겨볼 수 있습니다.</div>
+      <div class="gallery-thumbs">
+        ${featuredGalleryItems.map((item, index) => `
+          <button class="gallery-thumb" type="button" data-lightbox-index="${index}" aria-label="갤러리 사진 ${index + 1} 크게 보기">
             <img src="${item.src}" alt="${item.label}" />
-            <span>${item.label}</span>
           </button>
         `).join('')}
       </div>
@@ -245,7 +239,9 @@ document.querySelector('#app').innerHTML = `
 
   <dialog class="lightbox" data-lightbox>
     <button class="lightbox__close" type="button" data-lightbox-close aria-label="닫기">×</button>
+    <button class="lightbox__nav lightbox__nav--prev" type="button" data-lightbox-prev aria-label="이전 사진">‹</button>
     <img data-lightbox-image alt="" />
+    <button class="lightbox__nav lightbox__nav--next" type="button" data-lightbox-next aria-label="다음 사진">›</button>
     <p data-lightbox-caption></p>
   </dialog>
 `;
@@ -358,15 +354,30 @@ document.querySelector('[data-video-placeholder]').addEventListener('click', () 
 const lightbox = document.querySelector('[data-lightbox]');
 const lightboxImage = document.querySelector('[data-lightbox-image]');
 const lightboxCaption = document.querySelector('[data-lightbox-caption]');
+let activeLightboxIndex = 0;
+
+const showLightboxImage = (index) => {
+  activeLightboxIndex = (index + galleryItems.length) % galleryItems.length;
+  const item = galleryItems[activeLightboxIndex];
+
+  lightboxImage.src = item.src;
+  lightboxImage.alt = item.label;
+  lightboxCaption.textContent = `${activeLightboxIndex + 1} / ${galleryItems.length}`;
+};
 
 document.querySelectorAll('[data-lightbox-index]').forEach((button) => {
   button.addEventListener('click', () => {
-    const item = galleryItems[Number(button.dataset.lightboxIndex)];
-    lightboxImage.src = item.src;
-    lightboxImage.alt = item.label;
-    lightboxCaption.textContent = item.label;
+    showLightboxImage(Number(button.dataset.lightboxIndex));
     lightbox.showModal();
   });
+});
+
+document.querySelector('[data-lightbox-prev]').addEventListener('click', () => {
+  showLightboxImage(activeLightboxIndex - 1);
+});
+
+document.querySelector('[data-lightbox-next]').addEventListener('click', () => {
+  showLightboxImage(activeLightboxIndex + 1);
 });
 
 document.querySelector('[data-lightbox-close]').addEventListener('click', () => lightbox.close());
@@ -374,5 +385,19 @@ document.querySelector('[data-lightbox-close]').addEventListener('click', () => 
 lightbox.addEventListener('click', (event) => {
   if (event.target === lightbox) {
     lightbox.close();
+  }
+});
+
+window.addEventListener('keydown', (event) => {
+  if (!lightbox.open) {
+    return;
+  }
+
+  if (event.key === 'ArrowLeft') {
+    showLightboxImage(activeLightboxIndex - 1);
+  }
+
+  if (event.key === 'ArrowRight') {
+    showLightboxImage(activeLightboxIndex + 1);
   }
 });

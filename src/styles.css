@@ -315,51 +315,40 @@ button {
   background: #faf9f7;
 }
 
-.masonry {
-  columns: 2;
-  column-gap: 10px;
+.gallery-note {
+  margin: -12px 0 24px;
+  color: #8d8076;
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.7;
 }
 
-.masonry__item {
+.gallery-thumbs {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+
+.gallery-thumb {
   position: relative;
   display: block;
   width: 100%;
-  margin: 0 0 10px;
+  aspect-ratio: 1;
+  margin: 0;
   padding: 0;
   overflow: hidden;
-  break-inside: avoid;
   border: 0;
   border-radius: 4px;
   background: #f5f3ef;
   cursor: pointer;
 }
 
-.masonry__item img {
+.gallery-thumb img {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
   filter: saturate(0.9);
-}
-
-.masonry__item:nth-child(2n) img {
-  aspect-ratio: 3 / 4;
-  object-fit: cover;
-}
-
-.masonry__item:nth-child(3n) img {
-  aspect-ratio: 4 / 5;
-  object-fit: cover;
-}
-
-.masonry__item span {
-  position: absolute;
-  left: 10px;
-  bottom: 10px;
-  padding: 5px 8px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.82);
-  color: #555;
-  font-size: 11px;
 }
 
 .video {
@@ -693,6 +682,33 @@ button {
   color: #fff;
   font-size: 28px;
   cursor: pointer;
+}
+
+.lightbox__nav {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  width: 44px;
+  height: 54px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  cursor: pointer;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 38px;
+  transform: translateY(-50%);
+}
+
+.lightbox__nav--prev {
+  left: 12px;
+}
+
+.lightbox__nav--next {
+  right: 12px;
 }
 
 @keyframes coverFade {
