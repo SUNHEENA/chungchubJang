@@ -358,7 +358,24 @@ const lightboxImage = document.querySelector('[data-lightbox-image]');
 const lightboxCaption = document.querySelector('[data-lightbox-caption]');
 const galleryImage = document.querySelector('[data-gallery-image]');
 const galleryCount = document.querySelector('[data-gallery-count]');
+const galleryOpen = document.querySelector('[data-gallery-open]');
 let activeGalleryIndex = 0;
+let galleryTouchStartX = 0;
+let galleryTouchStartY = 0;
+let galleryDidSwipe = false;
+
+const handleGallerySwipe = (endX, endY) => {
+  const deltaX = endX - galleryTouchStartX;
+  const deltaY = endY - galleryTouchStartY;
+  const isHorizontalSwipe = Math.abs(deltaX) > 45 && Math.abs(deltaX) > Math.abs(deltaY) * 1.4;
+
+  if (!isHorizontalSwipe) {
+    return;
+  }
+
+  galleryDidSwipe = true;
+  showGalleryImage(deltaX < 0 ? activeGalleryIndex + 1 : activeGalleryIndex - 1);
+};
 
 const showGalleryImage = (index) => {
   if (!galleryItems.length) {
@@ -393,7 +410,47 @@ document.querySelector('[data-gallery-next]').addEventListener('click', () => {
   showGalleryImage(activeGalleryIndex + 1);
 });
 
-document.querySelector('[data-gallery-open]').addEventListener('click', () => {
+galleryOpen.addEventListener('pointerdown', (event) => {
+  galleryTouchStartX = event.clientX;
+  galleryTouchStartY = event.clientY;
+  galleryDidSwipe = false;
+
+  if (galleryOpen.setPointerCapture) {
+    galleryOpen.setPointerCapture(event.pointerId);
+  }
+});
+
+galleryOpen.addEventListener('pointerup', (event) => {
+  handleGallerySwipe(event.clientX, event.clientY);
+});
+
+galleryOpen.addEventListener('touchstart', (event) => {
+  if (window.PointerEvent) {
+    return;
+  }
+
+  const touch = event.changedTouches[0];
+  galleryTouchStartX = touch.clientX;
+  galleryTouchStartY = touch.clientY;
+  galleryDidSwipe = false;
+}, { passive: true });
+
+galleryOpen.addEventListener('touchend', (event) => {
+  if (window.PointerEvent) {
+    return;
+  }
+
+  const touch = event.changedTouches[0];
+  handleGallerySwipe(touch.clientX, touch.clientY);
+});
+
+galleryOpen.addEventListener('click', (event) => {
+  if (galleryDidSwipe) {
+    event.preventDefault();
+    galleryDidSwipe = false;
+    return;
+  }
+
   showLightboxImage(activeGalleryIndex);
   lightbox.showModal();
 });
