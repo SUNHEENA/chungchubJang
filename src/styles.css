@@ -475,13 +475,13 @@ button {
 
 .info-list {
   display: grid;
-  gap: 28px;
+  gap: 24px;
 }
 
 .info-list section {
   display: grid;
-  grid-template-columns: 30px 1fr;
-  gap: 14px;
+  grid-template-columns: 28px 1fr;
+  gap: 13px;
   align-items: start;
 }
 
@@ -506,16 +506,58 @@ button {
 }
 
 .info-list h3 {
-  margin: 0 0 8px;
-  font-size: 15px;
+  margin: 0 0 10px;
+  color: #2c2825;
+  font-size: 16px;
   font-weight: 600;
 }
 
 .info-list p {
   margin: 0 0 6px;
   color: #666;
-  font-size: 14px;
-  line-height: 1.75;
+  font-size: 14.5px;
+  line-height: 1.78;
+}
+
+.route-detail {
+  padding: 16px 16px 14px;
+  border: 1px solid rgba(217, 210, 203, 0.72);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 12px 34px rgba(88, 73, 60, 0.06);
+  backdrop-filter: blur(14px);
+}
+
+.route-detail p {
+  margin-bottom: 8px;
+  color: #423c37;
+  font-size: 15px;
+}
+
+.route-detail p:last-child {
+  margin-bottom: 0;
+}
+
+.route-detail strong {
+  display: block;
+  margin-bottom: 2px;
+  color: #28231f;
+  font-size: 15.5px;
+  font-weight: 700;
+}
+
+.route-detail span {
+  display: block;
+  color: #74675d;
+  font-size: 14.5px;
+}
+
+.route-note {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(200, 183, 166, 0.34);
+  color: #74675d !important;
+  font-size: 14px !important;
 }
 
 .text-button {

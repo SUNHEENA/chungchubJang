@@ -166,25 +166,36 @@ document.querySelector('#app').innerHTML = `
           <span class="line-icon line-icon--car" aria-hidden="true"></span>
           <div>
             <h3>주차 안내</h3>
-            <p>호텔 내 주차장을 이용하실 수 있습니다. 상세 주차 안내는 예식장 안내 페이지를 확인해 주세요.</p>
+            <div class="route-detail">
+              <p>홀리데이인 호텔 지상·지하 주차장</p>
+              <p>제2주차장 및 김대중컨벤션센터 제1주차장 이용 가능</p>
+            </div>
           </div>
         </section>
         <section>
           <span class="line-icon line-icon--train" aria-hidden="true"></span>
           <div>
             <h3>대중교통</h3>
-            <p>1호선 김대중컨벤션센터(마륵)역 4번 출구에서 도보 8분</p>
-            <p>5.18공원·김대중컨벤션센터역·보훈회관 정류장 도보 4분</p>
-            <p>순환01, 좌석02, 일곡38, 상무63, 상무64, 518</p>
+            <div class="route-detail">
+              <p><strong>김대중컨벤션센터(마륵)역 하차</strong><span>도보 5분 거리</span></p>
+              <p>송정19, 운림50, 첨단20, 상무62, 대촌69, 송암73, 대촌270, 나주160</p>
+              <p><strong>5.18 자유공원 하차</strong><span>도보 2~5분 거리</span></p>
+              <p>좌석02, 순환01, 상무63, 상무64, 518</p>
+              <p><strong>김대중컨벤션센터 하차</strong><span>도보 2~3분 거리</span></p>
+              <p>일곡38, 상무64</p>
+              <p class="route-note">버스 노선은 변경될 수 있으니 출발 전 확인 부탁드립니다.</p>
+            </div>
           </div>
         </section>
         <section>
           <span class="line-icon line-icon--rail" aria-hidden="true"></span>
           <div>
-            <h3>기차</h3>
-            <p>광주송정역에서 지하철 1호선 승차 후 김대중컨벤션센터(마륵)역 하차, 약 20분</p>
-            <p>광주송정역 정류장에서 좌석02 승차 후 5.18 자유공원 하차, 약 25분</p>
-            <p>택시 이용 시 약 20분</p>
+            <h3>지하철 이용시</h3>
+            <div class="route-detail">
+              <p><strong>김대중컨벤션센터(마륵)역 하차</strong><span>4번 출구에서 도보 5분 거리</span></p>
+              <p>광주송정역·광주공항역에서 지하철 1호선 이용</p>
+              <p>광주 터미널(유스퀘어)에서는 택시 또는 버스 이용을 추천드립니다.</p>
+            </div>
           </div>
         </section>
       </div>
