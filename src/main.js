@@ -56,11 +56,28 @@ document.querySelector('#app').innerHTML = `
       <img class="cover__image" src="${heroPhoto}" alt="눈 내리는 풍경 속 신랑 신부 일러스트" />
       <div class="cover__veil"></div>
       <div class="cover__text">
-        <h1>
-          <span>${couple.groom}</span>
-          <em>&</em>
-          <span>${couple.bride}</span>
-        </h1>
+        <p
+          style="margin:0 0 16px;color:#5d544d;font-family:'Cormorant Garamond',serif;font-size:15px;letter-spacing:.28em;text-transform:uppercase;"
+        >
+          We invite you
+        </p>
+        <div
+          style="display:inline-flex;align-items:center;gap:12px;padding:16px 22px;border:1px solid rgba(255,255,255,.5);border-radius:20px;background:rgba(255,255,255,.22);backdrop-filter:blur(16px);box-shadow:0 10px 30px rgba(74,63,56,.08);"
+        >
+          <span
+            style="color:#2b2521;font-family:'Noto Serif KR',serif;font-size:clamp(34px,8vw,44px);font-weight:400;line-height:1.05;white-space:nowrap;"
+          >
+            ${couple.groom}
+          </span>
+          <em style="color:#b8aaa0;font-family:'Cormorant Garamond',serif;font-size:clamp(30px,7vw,38px);font-style:italic;line-height:1;">
+            &
+          </em>
+          <span
+            style="color:#2b2521;font-family:'Noto Serif KR',serif;font-size:clamp(34px,8vw,44px);font-weight:400;line-height:1.05;white-space:nowrap;"
+          >
+            ${couple.bride}
+          </span>
+        </div>
       </div>
     </section>
 
