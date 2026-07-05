@@ -61,7 +61,6 @@ document.querySelector('#app').innerHTML = `
           <em>&</em>
           <span>${couple.bride}</span>
         </h1>
-        <p class="cover__date">2026. 10. 25 · 2:00 PM</p>
       </div>
     </section>
 
