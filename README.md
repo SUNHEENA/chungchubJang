@@ -1,6 +1,6 @@
 # chungchubJang
 
-Mobile wedding invitation for Na Seonhui and Lee Jisu.
+Mobile wedding invitation for Na Sunhee and Lee Jisoo.
 
 ## Wedding details
 
