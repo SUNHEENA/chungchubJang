@@ -1,6 +1,7 @@
 import './styles.css';
 import heroPhoto from './assets/hero/main.png';
 import weddingMusic from './assets/moonlight-invitation.mp3';
+import { inject } from '@vercel/analytics';
 
 const galleryModules = import.meta.glob('./assets/gallery/*.{jpg,jpeg,png,webp}', {
   eager: true,
@@ -494,3 +495,6 @@ window.addEventListener('keydown', (event) => {
     lightbox.close();
   }
 });
+
+// Initialize Vercel Web Analytics
+inject();
