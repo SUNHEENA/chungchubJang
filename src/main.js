@@ -11,7 +11,7 @@ const couple = {
   groom: '나선희',
   bride: '이지수',
   groomParents: '나창규 · 김옥례의 장남',
-  brideParents: '박찬숙의 차녀'
+  brideParents: '이기원 · 박찬숙의 차녀'
 };
 
 const wedding = {
