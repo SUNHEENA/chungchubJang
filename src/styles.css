@@ -644,6 +644,55 @@ button {
   font-size: 13px;
 }
 
+.account-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 26px;
+  z-index: 12;
+  width: min(330px, calc(100% - 48px));
+  padding: 16px 18px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 18px;
+  background: rgba(250, 249, 247, 0.78);
+  box-shadow: 0 18px 46px rgba(60, 50, 42, 0.16);
+  color: #2f2924;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 14px);
+  transition: opacity 0.26s ease, transform 0.26s ease;
+  backdrop-filter: blur(18px);
+}
+
+.account-toast.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.account-toast span {
+  display: block;
+  margin-bottom: 8px;
+  color: #9a8777;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+}
+
+.account-toast strong {
+  display: block;
+  margin-bottom: 3px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.account-toast p {
+  margin: 0;
+  color: #5b514a;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 20px;
+  letter-spacing: 0.04em;
+}
+
 .site-credit {
   padding: 34px 30px 42px;
   border-top: 1px solid #eee8e2;

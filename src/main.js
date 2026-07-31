@@ -260,6 +260,11 @@ document.querySelector('#app').innerHTML = `
         </details>
       `).join('')}
       <small class="status" data-account-status aria-live="polite"></small>
+      <div class="account-toast" data-account-toast aria-live="polite" aria-hidden="true">
+        <span>계좌번호가 복사되었습니다</span>
+        <strong data-toast-holder></strong>
+        <p data-toast-number></p>
+      </div>
     </section>
 
     <footer class="site-credit reveal">
@@ -376,9 +381,17 @@ const copyText = async (value, statusElement, successMessage) => {
       textarea.remove();
     }
 
-    statusElement.textContent = successMessage;
+    if (statusElement) {
+      statusElement.textContent = successMessage;
+    }
+
+    return true;
   } catch {
-    statusElement.textContent = '복사할 수 없어 직접 선택해 주세요.';
+    if (statusElement) {
+      statusElement.textContent = '복사할 수 없어 직접 선택해 주세요.';
+    }
+
+    return false;
   }
 };
 
@@ -386,11 +399,35 @@ document.querySelector('[data-copy-address]').addEventListener('click', () => {
   copyText(`${wedding.venue} ${wedding.hall} ${wedding.address}`, document.querySelector('[data-location-status]'), '주소가 복사되었습니다.');
 });
 
+const accountToast = document.querySelector('[data-account-toast]');
+const toastHolder = document.querySelector('[data-toast-holder]');
+const toastNumber = document.querySelector('[data-toast-number]');
+let accountToastTimer;
+
+const showAccountToast = (account) => {
+  accountToast.hidden = false;
+  accountToast.setAttribute('aria-hidden', 'false');
+  toastHolder.textContent = account.holder;
+  toastNumber.textContent = account.number;
+
+  window.clearTimeout(accountToastTimer);
+  accountToast.classList.add('is-visible');
+  accountToastTimer = window.setTimeout(() => {
+    accountToast.classList.remove('is-visible');
+    accountToast.setAttribute('aria-hidden', 'true');
+  }, 2600);
+};
+
 document.querySelectorAll('[data-copy-account]').forEach((button) => {
-  button.addEventListener('click', () => {
+  button.addEventListener('click', async () => {
     const [side, index] = button.dataset.copyAccount.split('-');
     const account = accounts[side][Number(index)];
-    copyText(account.number.replace(/\D/g, ''), document.querySelector('[data-account-status]'), '계좌번호가 복사되었습니다.');
+    const didCopy = await copyText(account.number.replace(/\D/g, ''), document.querySelector('[data-account-status]'), '');
+
+    if (didCopy) {
+      document.querySelector('[data-account-status]').textContent = '';
+      showAccountToast(account);
+    }
   });
 });
 
