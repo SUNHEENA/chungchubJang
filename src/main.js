@@ -45,6 +45,7 @@ const galleryItems = Object.entries(galleryModules)
     label: `Wedding Moment ${index + 1}`,
     filename: path.split('/').pop()
   }));
+const galleryPreviewCount = 9;
 
 
 const mapQuery = encodeURIComponent('홀리데이 인 광주 광주광역시 서구 치평동 상무누리로 55');
@@ -135,15 +136,24 @@ document.querySelector('#app').innerHTML = `
         <span>Gallery</span>
         <h2>Our Moments</h2>
       </div>
-      <div class="gallery-note">좌우 버튼으로 사진을 넘기고, 사진을 누르면 크게 볼 수 있습니다.</div>
-      <div class="gallery-viewer" aria-live="polite">
-        <button class="gallery-nav gallery-nav--prev" type="button" data-gallery-prev aria-label="이전 사진">‹</button>
-        <button class="gallery-current" type="button" data-gallery-open aria-label="현재 갤러리 사진 크게 보기">
-          <img src="${galleryItems[0]?.src ?? heroPhoto}" alt="${galleryItems[0]?.label ?? 'Wedding Moment'}" data-gallery-image />
-        </button>
-        <button class="gallery-nav gallery-nav--next" type="button" data-gallery-next aria-label="다음 사진">›</button>
-        <p class="gallery-count" data-gallery-count>1 / ${galleryItems.length || 1}</p>
+      <div class="gallery-note">사진을 누르면 크게 볼 수 있고, 확대 화면에서 한 장씩 넘겨볼 수 있습니다.</div>
+      <div class="gallery-grid" data-gallery-grid>
+        ${galleryItems.map((item, index) => `
+          <button
+            class="gallery-tile${index >= galleryPreviewCount ? ' is-hidden' : ''}"
+            type="button"
+            data-gallery-index="${index}"
+            aria-label="갤러리 사진 ${index + 1} 크게 보기"
+          >
+            <img src="${item.src}" alt="${item.label}" />
+          </button>
+        `).join('')}
       </div>
+      ${galleryItems.length > galleryPreviewCount ? `
+        <button class="gallery-more" type="button" data-gallery-more>
+          사진 더보기+
+        </button>
+      ` : ''}
     </section>
 
     <section class="section location reveal" aria-label="오시는 길">
@@ -263,7 +273,9 @@ document.querySelector('#app').innerHTML = `
 
   <dialog class="lightbox" data-lightbox>
     <button class="lightbox__close" type="button" data-lightbox-close aria-label="닫기">×</button>
+    <button class="lightbox__nav lightbox__nav--prev" type="button" data-lightbox-prev aria-label="이전 사진">‹</button>
     <img data-lightbox-image alt="" />
+    <button class="lightbox__nav lightbox__nav--next" type="button" data-lightbox-next aria-label="다음 사진">›</button>
     <p data-lightbox-caption></p>
   </dialog>
 `;
@@ -350,7 +362,20 @@ document.querySelectorAll('.reveal').forEach((section) => revealObserver.observe
 
 const copyText = async (value, statusElement, successMessage) => {
   try {
-    await navigator.clipboard.writeText(value);
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(value);
+    } else {
+      const textarea = document.createElement('textarea');
+      textarea.value = value;
+      textarea.setAttribute('readonly', '');
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      textarea.remove();
+    }
+
     statusElement.textContent = successMessage;
   } catch {
     statusElement.textContent = '복사할 수 없어 직접 선택해 주세요.';
@@ -365,7 +390,7 @@ document.querySelectorAll('[data-copy-account]').forEach((button) => {
   button.addEventListener('click', () => {
     const [side, index] = button.dataset.copyAccount.split('-');
     const account = accounts[side][Number(index)];
-    copyText(`${account.bank} ${account.number} ${account.holder}`, document.querySelector('[data-account-status]'), '계좌번호가 복사되었습니다.');
+    copyText(account.number.replace(/\D/g, ''), document.querySelector('[data-account-status]'), '계좌번호가 복사되었습니다.');
   });
 });
 
@@ -380,28 +405,9 @@ if (videoPlaceholder) {
 const lightbox = document.querySelector('[data-lightbox]');
 const lightboxImage = document.querySelector('[data-lightbox-image]');
 const lightboxCaption = document.querySelector('[data-lightbox-caption]');
-const galleryImage = document.querySelector('[data-gallery-image]');
-const galleryCount = document.querySelector('[data-gallery-count]');
-const galleryOpen = document.querySelector('[data-gallery-open]');
 let activeGalleryIndex = 0;
-let galleryTouchStartX = 0;
-let galleryTouchStartY = 0;
-let galleryDidSwipe = false;
 
-const handleGallerySwipe = (endX, endY) => {
-  const deltaX = endX - galleryTouchStartX;
-  const deltaY = endY - galleryTouchStartY;
-  const isHorizontalSwipe = Math.abs(deltaX) > 45 && Math.abs(deltaX) > Math.abs(deltaY) * 1.4;
-
-  if (!isHorizontalSwipe) {
-    return;
-  }
-
-  galleryDidSwipe = true;
-  showGalleryImage(deltaX < 0 ? activeGalleryIndex + 1 : activeGalleryIndex - 1);
-};
-
-const showGalleryImage = (index) => {
+const showLightboxImage = (index) => {
   if (!galleryItems.length) {
     return;
   }
@@ -409,77 +415,32 @@ const showGalleryImage = (index) => {
   activeGalleryIndex = (index + galleryItems.length) % galleryItems.length;
   const item = galleryItems[activeGalleryIndex];
 
-  galleryImage.src = item.src;
-  galleryImage.alt = item.label;
-  galleryCount.textContent = `${activeGalleryIndex + 1} / ${galleryItems.length}`;
-};
-
-const showLightboxImage = (index) => {
-  if (!galleryItems.length) {
-    return;
-  }
-
-  const item = galleryItems[index];
-
   lightboxImage.src = item.src;
   lightboxImage.alt = item.label;
-  lightboxCaption.textContent = `${index + 1} / ${galleryItems.length}`;
+  lightboxCaption.textContent = `${activeGalleryIndex + 1} / ${galleryItems.length}`;
 };
 
-document.querySelector('[data-gallery-prev]').addEventListener('click', () => {
-  showGalleryImage(activeGalleryIndex - 1);
+document.querySelectorAll('[data-gallery-index]').forEach((button) => {
+  button.addEventListener('click', () => {
+    showLightboxImage(Number(button.dataset.galleryIndex));
+    lightbox.showModal();
+  });
 });
 
-document.querySelector('[data-gallery-next]').addEventListener('click', () => {
-  showGalleryImage(activeGalleryIndex + 1);
-});
+const galleryMoreButton = document.querySelector('[data-gallery-more]');
 
-galleryOpen.addEventListener('pointerdown', (event) => {
-  galleryTouchStartX = event.clientX;
-  galleryTouchStartY = event.clientY;
-  galleryDidSwipe = false;
-
-  if (galleryOpen.setPointerCapture) {
-    galleryOpen.setPointerCapture(event.pointerId);
-  }
-});
-
-galleryOpen.addEventListener('pointerup', (event) => {
-  handleGallerySwipe(event.clientX, event.clientY);
-});
-
-galleryOpen.addEventListener('touchstart', (event) => {
-  if (window.PointerEvent) {
-    return;
-  }
-
-  const touch = event.changedTouches[0];
-  galleryTouchStartX = touch.clientX;
-  galleryTouchStartY = touch.clientY;
-  galleryDidSwipe = false;
-}, { passive: true });
-
-galleryOpen.addEventListener('touchend', (event) => {
-  if (window.PointerEvent) {
-    return;
-  }
-
-  const touch = event.changedTouches[0];
-  handleGallerySwipe(touch.clientX, touch.clientY);
-});
-
-galleryOpen.addEventListener('click', (event) => {
-  if (galleryDidSwipe) {
-    event.preventDefault();
-    galleryDidSwipe = false;
-    return;
-  }
-
-  showLightboxImage(activeGalleryIndex);
-  lightbox.showModal();
-});
+if (galleryMoreButton) {
+  galleryMoreButton.addEventListener('click', () => {
+    document.querySelectorAll('.gallery-tile.is-hidden').forEach((tile) => {
+      tile.classList.remove('is-hidden');
+    });
+    galleryMoreButton.remove();
+  });
+}
 
 document.querySelector('[data-lightbox-close]').addEventListener('click', () => lightbox.close());
+document.querySelector('[data-lightbox-prev]').addEventListener('click', () => showLightboxImage(activeGalleryIndex - 1));
+document.querySelector('[data-lightbox-next]').addEventListener('click', () => showLightboxImage(activeGalleryIndex + 1));
 
 lightbox.addEventListener('click', (event) => {
   if (event.target === lightbox) {
@@ -494,5 +455,13 @@ window.addEventListener('keydown', (event) => {
 
   if (event.key === 'Escape') {
     lightbox.close();
+  }
+
+  if (event.key === 'ArrowLeft') {
+    showLightboxImage(activeGalleryIndex - 1);
+  }
+
+  if (event.key === 'ArrowRight') {
+    showLightboxImage(activeGalleryIndex + 1);
   }
 });
