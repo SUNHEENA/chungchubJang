@@ -30,8 +30,8 @@ const wedding = {
 const accounts = {
   groom: [
     { bank: '국민', holder: '나선희', number: '740502-00-064797' },
-    { bank: '농협', holder: '나창규 (아버지)', number: '356-1426-5409-93' },
-    { bank: '농협', holder: '김옥례 (어머니)', number: '616-02-265406' }
+    { bank: '농협', holder: '나창규', number: '356-1426-5409-93' },
+    { bank: '농협', holder: '김옥례', number: '616-02-265406' }
   ],
   bride: [
     { bank: '신한', holder: '이지수', number: '110-509-767604' },
@@ -81,7 +81,8 @@ document.querySelector('#app').innerHTML = `
       <p class="section-kicker">소중한 분들을 초대합니다</p>
       <p>
         서로의 계절이 되어준 두 사람이<br />
-        이제 같은 길 위에서 새로운 하루를 시작합니다.<br />
+        이제 같은 길 위에서<br />
+        새로운 하루를 시작합니다.<br />
         소중한 걸음으로 함께 축복해 주세요.
       </p>
     </section>
