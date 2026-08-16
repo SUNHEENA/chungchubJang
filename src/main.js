@@ -2,7 +2,7 @@ import './styles.css';
 import heroPhoto from './assets/hero/main.png';
 import weddingMusic from './assets/moonlight-invitation.mp3';
 
-const galleryModules = import.meta.glob('./assets/gallery/*.{jpg,jpeg,png,webp}', {
+const galleryModules = import.meta.glob('./assets/gallery/*.webp', {
   eager: true,
   import: 'default'
 });
@@ -138,7 +138,7 @@ document.querySelector('#app').innerHTML = `
       <div class="gallery-slider" data-gallery-slider aria-label="웨딩 사진 슬라이드">
         ${galleryItems.map((item, index) => `
           <figure class="gallery-slide" data-gallery-slide="${index}">
-            <img src="${item.src}" alt="${item.label}" />
+            <img src="${item.src}" alt="${item.label}" loading="lazy" decoding="async" />
           </figure>
         `).join('')}
       </div>
@@ -439,17 +439,16 @@ const updateGalleryNavigator = (index) => {
   activeGalleryIndex = Math.max(0, Math.min(index, gallerySlides.length - 1));
   galleryCount.textContent = `${activeGalleryIndex + 1} / ${gallerySlides.length}`;
   galleryProgress.style.transform = `scaleX(${(activeGalleryIndex + 1) / gallerySlides.length})`;
-  galleryPrevious.disabled = activeGalleryIndex === 0;
-  galleryNext.disabled = activeGalleryIndex === gallerySlides.length - 1;
 };
 
 const moveGallery = (index) => {
-  const targetIndex = Math.max(0, Math.min(index, gallerySlides.length - 1));
+  const targetIndex = (index + gallerySlides.length) % gallerySlides.length;
   gallerySlides[targetIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
 };
 
 if (gallerySlides.length) {
   updateGalleryNavigator(0);
+  let galleryTouchStartX = 0;
 
   gallerySlider.addEventListener('scroll', () => {
     window.cancelAnimationFrame(galleryScrollFrame);
@@ -461,4 +460,24 @@ if (gallerySlides.length) {
 
   galleryPrevious.addEventListener('click', () => moveGallery(activeGalleryIndex - 1));
   galleryNext.addEventListener('click', () => moveGallery(activeGalleryIndex + 1));
+
+  gallerySlider.addEventListener('touchstart', (event) => {
+    galleryTouchStartX = event.changedTouches[0].clientX;
+  }, { passive: true });
+
+  gallerySlider.addEventListener('touchend', (event) => {
+    const distance = galleryTouchStartX - event.changedTouches[0].clientX;
+
+    if (Math.abs(distance) < 42) {
+      return;
+    }
+
+    if (distance > 0 && activeGalleryIndex === gallerySlides.length - 1) {
+      moveGallery(0);
+    }
+
+    if (distance < 0 && activeGalleryIndex === 0) {
+      moveGallery(gallerySlides.length - 1);
+    }
+  }, { passive: true });
 }
