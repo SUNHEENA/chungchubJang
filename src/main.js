@@ -29,12 +29,13 @@ const wedding = {
 
 const accounts = {
   groom: [
-    { bank: '국민', holder: '나선희', number: '740502-66-064797' },
+    { bank: '국민', holder: '나선희', number: '740502-00-064797' },
     { bank: '농협', holder: '나창규 (아버지)', number: '356-1426-5409-93' },
     { bank: '농협', holder: '김옥례 (어머니)', number: '616-02-265406' }
   ],
   bride: [
-    { bank: '신한', holder: '이지수', number: '110-509-767604' }
+    { bank: '신한', holder: '이지수', number: '110-509-767604' },
+    { bank: '농협', holder: '박찬숙', number: '671-02-230991' }
   ]
 };
 
@@ -45,9 +46,6 @@ const galleryItems = Object.entries(galleryModules)
     label: `Wedding Moment ${index + 1}`,
     filename: path.split('/').pop()
   }));
-const galleryPreviewCount = 9;
-
-
 const mapQuery = encodeURIComponent('홀리데이 인 광주 광주광역시 서구 치평동 상무누리로 55');
 
 document.querySelector('#app').innerHTML = `
@@ -131,29 +129,25 @@ document.querySelector('#app').innerHTML = `
       <p class="countdown" data-countdown></p>
     </section>
 
-    <section class="section gallery reveal" aria-label="웨딩 갤러리">
+    <section id="gallery" class="section gallery reveal" aria-label="웨딩 갤러리">
       <div class="section-heading">
         <span>Gallery</span>
         <h2>Our Moments</h2>
       </div>
-      <div class="gallery-note">사진을 누르면 크게 볼 수 있고, 확대 화면에서 한 장씩 넘겨볼 수 있습니다.</div>
-      <div class="gallery-grid" data-gallery-grid>
+      <p class="gallery-note">좌우로 넘기며 두 사람의 순간을 만나보세요.</p>
+      <div class="gallery-slider" data-gallery-slider aria-label="웨딩 사진 슬라이드">
         ${galleryItems.map((item, index) => `
-          <button
-            class="gallery-tile${index >= galleryPreviewCount ? ' is-hidden' : ''}"
-            type="button"
-            data-gallery-index="${index}"
-            aria-label="갤러리 사진 ${index + 1} 크게 보기"
-          >
+          <figure class="gallery-slide" data-gallery-slide="${index}">
             <img src="${item.src}" alt="${item.label}" />
-          </button>
+          </figure>
         `).join('')}
       </div>
-      ${galleryItems.length > galleryPreviewCount ? `
-        <button class="gallery-more" type="button" data-gallery-more>
-          사진 더보기+
-        </button>
-      ` : ''}
+      <div class="gallery-navigator" aria-label="갤러리 사진 이동">
+        <button class="gallery-navigator__button" type="button" data-gallery-prev aria-label="이전 사진">‹</button>
+        <span class="gallery-navigator__count" data-gallery-count aria-live="polite">1 / ${galleryItems.length}</span>
+        <div class="gallery-navigator__progress" aria-hidden="true"><i data-gallery-progress></i></div>
+        <button class="gallery-navigator__button" type="button" data-gallery-next aria-label="다음 사진">›</button>
+      </div>
     </section>
 
     <section class="section location reveal" aria-label="오시는 길">
@@ -251,7 +245,7 @@ document.querySelector('#app').innerHTML = `
                   <dt>계좌번호</dt>
                   <dd class="account-number">
                     <span>${account.number}</span>
-                    <button class="copy-icon" type="button" data-copy-account="${side}-${index}" aria-label="계좌번호 복사">⎘</button>
+                    <button class="copy-icon" type="button" data-copy-account="${side}-${index}" aria-label="계좌번호 복사">⎘</button>Copy
                   </dd>
                 </div>
               </dl>
@@ -276,13 +270,6 @@ document.querySelector('#app').innerHTML = `
     </footer>
   </main>
 
-  <dialog class="lightbox" data-lightbox>
-    <button class="lightbox__close" type="button" data-lightbox-close aria-label="닫기">×</button>
-    <button class="lightbox__nav lightbox__nav--prev" type="button" data-lightbox-prev aria-label="이전 사진">‹</button>
-    <img data-lightbox-image alt="" />
-    <button class="lightbox__nav lightbox__nav--next" type="button" data-lightbox-next aria-label="다음 사진">›</button>
-    <p data-lightbox-caption></p>
-  </dialog>
 `;
 
 const weddingDate = new Date('2026-10-25T14:00:00+09:00');
@@ -439,66 +426,39 @@ if (videoPlaceholder) {
   });
 }
 
-const lightbox = document.querySelector('[data-lightbox]');
-const lightboxImage = document.querySelector('[data-lightbox-image]');
-const lightboxCaption = document.querySelector('[data-lightbox-caption]');
+const gallerySlider = document.querySelector('[data-gallery-slider]');
+const gallerySlides = Array.from(document.querySelectorAll('[data-gallery-slide]'));
+const galleryCount = document.querySelector('[data-gallery-count]');
+const galleryProgress = document.querySelector('[data-gallery-progress]');
+const galleryPrevious = document.querySelector('[data-gallery-prev]');
+const galleryNext = document.querySelector('[data-gallery-next]');
 let activeGalleryIndex = 0;
+let galleryScrollFrame;
 
-const showLightboxImage = (index) => {
-  if (!galleryItems.length) {
-    return;
-  }
-
-  activeGalleryIndex = (index + galleryItems.length) % galleryItems.length;
-  const item = galleryItems[activeGalleryIndex];
-
-  lightboxImage.src = item.src;
-  lightboxImage.alt = item.label;
-  lightboxCaption.textContent = `${activeGalleryIndex + 1} / ${galleryItems.length}`;
+const updateGalleryNavigator = (index) => {
+  activeGalleryIndex = Math.max(0, Math.min(index, gallerySlides.length - 1));
+  galleryCount.textContent = `${activeGalleryIndex + 1} / ${gallerySlides.length}`;
+  galleryProgress.style.transform = `scaleX(${(activeGalleryIndex + 1) / gallerySlides.length})`;
+  galleryPrevious.disabled = activeGalleryIndex === 0;
+  galleryNext.disabled = activeGalleryIndex === gallerySlides.length - 1;
 };
 
-document.querySelectorAll('[data-gallery-index]').forEach((button) => {
-  button.addEventListener('click', () => {
-    showLightboxImage(Number(button.dataset.galleryIndex));
-    lightbox.showModal();
-  });
-});
+const moveGallery = (index) => {
+  const targetIndex = Math.max(0, Math.min(index, gallerySlides.length - 1));
+  gallerySlides[targetIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+};
 
-const galleryMoreButton = document.querySelector('[data-gallery-more]');
+if (gallerySlides.length) {
+  updateGalleryNavigator(0);
 
-if (galleryMoreButton) {
-  galleryMoreButton.addEventListener('click', () => {
-    document.querySelectorAll('.gallery-tile.is-hidden').forEach((tile) => {
-      tile.classList.remove('is-hidden');
+  gallerySlider.addEventListener('scroll', () => {
+    window.cancelAnimationFrame(galleryScrollFrame);
+    galleryScrollFrame = window.requestAnimationFrame(() => {
+      const nearestIndex = Math.round(gallerySlider.scrollLeft / gallerySlider.clientWidth);
+      updateGalleryNavigator(nearestIndex);
     });
-    galleryMoreButton.remove();
-  });
+  }, { passive: true });
+
+  galleryPrevious.addEventListener('click', () => moveGallery(activeGalleryIndex - 1));
+  galleryNext.addEventListener('click', () => moveGallery(activeGalleryIndex + 1));
 }
-
-document.querySelector('[data-lightbox-close]').addEventListener('click', () => lightbox.close());
-document.querySelector('[data-lightbox-prev]').addEventListener('click', () => showLightboxImage(activeGalleryIndex - 1));
-document.querySelector('[data-lightbox-next]').addEventListener('click', () => showLightboxImage(activeGalleryIndex + 1));
-
-lightbox.addEventListener('click', (event) => {
-  if (event.target === lightbox) {
-    lightbox.close();
-  }
-});
-
-window.addEventListener('keydown', (event) => {
-  if (!lightbox.open) {
-    return;
-  }
-
-  if (event.key === 'Escape') {
-    lightbox.close();
-  }
-
-  if (event.key === 'ArrowLeft') {
-    showLightboxImage(activeGalleryIndex - 1);
-  }
-
-  if (event.key === 'ArrowRight') {
-    showLightboxImage(activeGalleryIndex + 1);
-  }
-});
