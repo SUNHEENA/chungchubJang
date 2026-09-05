@@ -51,7 +51,7 @@ const mapQuery = encodeURIComponent('홀리데이 인 광주 광주광역시 서
 document.querySelector('#app').innerHTML = `
   <main class="invitation">
     <button class="music-toggle" type="button" data-music-toggle aria-label="배경음악 재생">♪</button>
-    <audio data-wedding-music src="${weddingMusic}" preload="auto" autoplay loop playsinline></audio>
+    <audio data-wedding-music src="${weddingMusic}" preload="metadata" loop playsinline></audio>
 
     <section class="cover" aria-label="모바일 청첩장 커버">
       <img class="cover__image" src="${heroPhoto}" alt="눈 내리는 풍경 속 신랑 신부 일러스트" />
@@ -324,22 +324,6 @@ musicToggle.addEventListener('click', async () => {
   } catch {
     stopMusic();
   }
-});
-
-const autoplayMusic = () => {
-  playMusic().catch(() => {});
-};
-
-autoplayMusic();
-
-['pointerdown', 'touchstart', 'keydown', 'scroll'].forEach((eventName) => {
-  window.addEventListener(eventName, (event) => {
-    if (!weddingAudio.paused || event.target?.closest?.('[data-music-toggle]')) {
-      return;
-    }
-
-    autoplayMusic();
-  }, { once: true, passive: true });
 });
 
 const revealObserver = new IntersectionObserver((entries) => {
