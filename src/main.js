@@ -1,5 +1,5 @@
 import './styles.css';
-import heroPhoto from './assets/hero/main.png';
+import heroPhoto from './assets/hero/main.webp';
 import weddingMusic from './assets/moonlight-invitation.mp3';
 
 const galleryModules = import.meta.glob('./assets/gallery/*.webp', {
