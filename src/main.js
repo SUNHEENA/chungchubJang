@@ -255,11 +255,6 @@ document.querySelector('#app').innerHTML = `
         </details>
       `).join('')}
       <small class="status" data-account-status aria-live="polite"></small>
-      <div class="copy-toast" data-copy-toast aria-live="polite" aria-hidden="true">
-        <span data-copy-toast-title></span>
-        <strong data-copy-toast-subtitle></strong>
-        <p data-copy-toast-value></p>
-      </div>
     </section>
 
     <footer class="site-credit reveal">
@@ -270,6 +265,11 @@ document.querySelector('#app').innerHTML = `
       </a>
     </footer>
   </main>
+  <div class="copy-toast" data-copy-toast aria-live="polite" aria-hidden="true">
+    <span data-copy-toast-title></span>
+    <strong data-copy-toast-subtitle></strong>
+    <p data-copy-toast-value></p>
+  </div>
 
 `;
 
