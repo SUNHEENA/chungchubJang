@@ -694,7 +694,7 @@ button {
   font-size: 13px;
 }
 
-.account-toast {
+.copy-toast {
   position: fixed;
   left: 50%;
   top: 50%;
@@ -714,12 +714,12 @@ button {
   backdrop-filter: blur(18px);
 }
 
-.account-toast.is-visible {
+.copy-toast.is-visible {
   opacity: 1;
   transform: translate(-50%, -50%);
 }
 
-.account-toast span {
+.copy-toast span {
   display: block;
   margin-bottom: 8px;
   color: #9a8777;
@@ -728,14 +728,14 @@ button {
   letter-spacing: 0.1em;
 }
 
-.account-toast strong {
+.copy-toast strong {
   display: block;
   margin-bottom: 3px;
   font-size: 15px;
   font-weight: 600;
 }
 
-.account-toast p {
+.copy-toast p {
   margin: 0;
   color: #5b514a;
   font-family: "Cormorant Garamond", serif;

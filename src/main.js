@@ -255,10 +255,10 @@ document.querySelector('#app').innerHTML = `
         </details>
       `).join('')}
       <small class="status" data-account-status aria-live="polite"></small>
-      <div class="account-toast" data-account-toast aria-live="polite" aria-hidden="true">
-        <span>계좌번호가 복사되었습니다</span>
-        <strong data-toast-holder></strong>
-        <p data-toast-number></p>
+      <div class="copy-toast" data-copy-toast aria-live="polite" aria-hidden="true">
+        <span data-copy-toast-title></span>
+        <strong data-copy-toast-subtitle></strong>
+        <p data-copy-toast-value></p>
       </div>
     </section>
 
@@ -368,25 +368,36 @@ const copyText = async (value, statusElement, successMessage) => {
 };
 
 document.querySelector('[data-copy-address]').addEventListener('click', () => {
-  copyText(`${wedding.venue} ${wedding.hall} ${wedding.address}`, document.querySelector('[data-location-status]'), '주소가 복사되었습니다.');
+  copyText(wedding.address, document.querySelector('[data-location-status]'), '').then((didCopy) => {
+    if (didCopy) {
+      document.querySelector('[data-location-status]').textContent = '';
+      showCopyToast({
+        title: '주소가 복사되었습니다',
+        subtitle: `${wedding.venue} ${wedding.hall}`,
+        value: wedding.address
+      });
+    }
+  });
 });
 
-const accountToast = document.querySelector('[data-account-toast]');
-const toastHolder = document.querySelector('[data-toast-holder]');
-const toastNumber = document.querySelector('[data-toast-number]');
-let accountToastTimer;
+const copyToast = document.querySelector('[data-copy-toast]');
+const copyToastTitle = document.querySelector('[data-copy-toast-title]');
+const copyToastSubtitle = document.querySelector('[data-copy-toast-subtitle]');
+const copyToastValue = document.querySelector('[data-copy-toast-value]');
+let copyToastTimer;
 
-const showAccountToast = (account) => {
-  accountToast.hidden = false;
-  accountToast.setAttribute('aria-hidden', 'false');
-  toastHolder.textContent = account.holder;
-  toastNumber.textContent = account.number;
+const showCopyToast = ({ title, subtitle, value }) => {
+  copyToast.hidden = false;
+  copyToast.setAttribute('aria-hidden', 'false');
+  copyToastTitle.textContent = title;
+  copyToastSubtitle.textContent = subtitle;
+  copyToastValue.textContent = value;
 
-  window.clearTimeout(accountToastTimer);
-  accountToast.classList.add('is-visible');
-  accountToastTimer = window.setTimeout(() => {
-    accountToast.classList.remove('is-visible');
-    accountToast.setAttribute('aria-hidden', 'true');
+  window.clearTimeout(copyToastTimer);
+  copyToast.classList.add('is-visible');
+  copyToastTimer = window.setTimeout(() => {
+    copyToast.classList.remove('is-visible');
+    copyToast.setAttribute('aria-hidden', 'true');
   }, 2600);
 };
 
@@ -398,7 +409,11 @@ document.querySelectorAll('[data-copy-account]').forEach((button) => {
 
     if (didCopy) {
       document.querySelector('[data-account-status]').textContent = '';
-      showAccountToast(account);
+      showCopyToast({
+        title: '계좌번호가 복사되었습니다',
+        subtitle: account.holder,
+        value: account.number
+      });
     }
   });
 });
