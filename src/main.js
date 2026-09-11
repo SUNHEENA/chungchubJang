@@ -235,7 +235,7 @@ document.querySelector('#app').innerHTML = `
         ['groom', '신랑측', accounts.groom],
         ['bride', '신부측', accounts.bride]
       ].map(([side, title, list]) => `
-        <details class="account-accordion">
+        <details class="account-accordion" open>
           <summary>${title}<span>⌄</span></summary>
           ${list.map((account, index) => `
             <div class="account-row">
