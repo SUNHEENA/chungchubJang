@@ -760,6 +760,15 @@ button {
   text-transform: lowercase;
 }
 
+.daily-visits {
+  color: #a89c92;
+  font-family: "Pretendard", "SUIT", "Apple SD Gothic Neo", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
 .site-credit a {
   display: inline-flex;
   align-items: center;

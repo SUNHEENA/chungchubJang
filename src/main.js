@@ -258,7 +258,7 @@ document.querySelector('#app').innerHTML = `
     </section>
 
     <footer class="site-credit reveal">
-      <p>made by sun</p>
+      <p>made by sun <span class="daily-visits" data-daily-visits aria-live="polite"></span></p>
       <a href="mailto:skould@naver.com?subject=Wedding%20Invitation%20Bug%20Report" aria-label="버그 리포팅 메일 보내기">
         <span>🐞 버그 리포팅</span>
         <small>skould@naver.com</small>
@@ -425,6 +425,19 @@ if (videoPlaceholder) {
     document.querySelector('[data-video-status]').textContent = '영상 파일을 주시면 이 영역에 바로 연결하겠습니다.';
   });
 }
+
+const dailyVisits = document.querySelector('[data-daily-visits]');
+
+fetch('/api/visits', { credentials: 'same-origin' })
+  .then((response) => (response.ok ? response.json() : null))
+  .then((data) => {
+    if (typeof data?.count === 'number' && data.count > 0) {
+      dailyVisits.textContent = `· 오늘 ${data.count.toLocaleString('ko-KR')}명 방문`;
+    }
+  })
+  .catch(() => {
+    dailyVisits.textContent = '';
+  });
 
 const gallerySlider = document.querySelector('[data-gallery-slider]');
 const gallerySlides = Array.from(document.querySelectorAll('[data-gallery-slide]'));
