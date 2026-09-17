@@ -445,52 +445,154 @@ const galleryCount = document.querySelector('[data-gallery-count]');
 const galleryProgress = document.querySelector('[data-gallery-progress]');
 const galleryPrevious = document.querySelector('[data-gallery-prev]');
 const galleryNext = document.querySelector('[data-gallery-next]');
+
 let activeGalleryIndex = 0;
 let galleryScrollFrame;
+let galleryMoving = false;
 
 const updateGalleryNavigator = (index) => {
-  activeGalleryIndex = Math.max(0, Math.min(index, gallerySlides.length - 1));
-  galleryCount.textContent = `${activeGalleryIndex + 1} / ${gallerySlides.length}`;
-  galleryProgress.style.transform = `scaleX(${(activeGalleryIndex + 1) / gallerySlides.length})`;
+  activeGalleryIndex = Math.max(
+    0,
+    Math.min(index, gallerySlides.length - 1)
+  );
+
+  galleryCount.textContent =
+    `${activeGalleryIndex + 1} / ${gallerySlides.length}`;
+
+  galleryProgress.style.transform =
+    `scaleX(${(activeGalleryIndex + 1) / gallerySlides.length})`;
 };
 
 const moveGallery = (index) => {
-  const targetIndex = (index + gallerySlides.length) % gallerySlides.length;
-  gallerySlides[targetIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+  // 첫 장/마지막 장 밖으로 이동하지 않도록 제한
+  const targetIndex = Math.max(
+    0,
+    Math.min(index, gallerySlides.length - 1)
+  );
+
+  // 이미 해당 사진이거나 이동 중이면 무시
+  if (targetIndex === activeGalleryIndex || galleryMoving) {
+    return;
+  }
+
+  galleryMoving = true;
+
+  // 이동할 사진 번호를 먼저 확정
+  updateGalleryNavigator(targetIndex);
+
+  gallerySlides[targetIndex].scrollIntoView({
+    behavior: 'smooth',
+    block: 'nearest',
+    inline: 'start'
+  });
+
+  // smooth scroll이 끝날 때까지 추가 이동 방지
+  window.setTimeout(() => {
+    galleryMoving = false;
+
+    // 실제 위치를 한 번 정리
+    gallerySlides[targetIndex].scrollIntoView({
+      behavior: 'auto',
+      block: 'nearest',
+      inline: 'start'
+    });
+  }, 450);
 };
 
 if (gallerySlides.length) {
   updateGalleryNavigator(0);
-  let galleryTouchStartX = 0;
 
+  let galleryTouchStartX = 0;
+  let galleryTouchStartY = 0;
+  let galleryTouchActive = false;
+
+  // --------------------------------------------------
+  // 스크롤 위치 감지
+  // --------------------------------------------------
   gallerySlider.addEventListener('scroll', () => {
     window.cancelAnimationFrame(galleryScrollFrame);
+
     galleryScrollFrame = window.requestAnimationFrame(() => {
-      const nearestIndex = Math.round(gallerySlider.scrollLeft / gallerySlider.clientWidth);
-      updateGalleryNavigator(nearestIndex);
+      // 우리가 직접 이동시키는 중에는
+      // scroll 이벤트로 번호를 다시 계산하지 않음
+      if (galleryMoving) {
+        return;
+      }
+
+      const nearestIndex = Math.round(
+        gallerySlider.scrollLeft / gallerySlider.clientWidth
+      );
+
+      updateGalleryNavigator(
+        Math.max(
+          0,
+          Math.min(nearestIndex, gallerySlides.length - 1)
+        )
+      );
     });
   }, { passive: true });
 
-  galleryPrevious.addEventListener('click', () => moveGallery(activeGalleryIndex - 1));
-  galleryNext.addEventListener('click', () => moveGallery(activeGalleryIndex + 1));
+  // --------------------------------------------------
+  // 이전 / 다음 버튼
+  // --------------------------------------------------
+  galleryPrevious.addEventListener('click', () => {
+    moveGallery(activeGalleryIndex - 1);
+  });
 
+  galleryNext.addEventListener('click', () => {
+    moveGallery(activeGalleryIndex + 1);
+  });
+
+  // --------------------------------------------------
+  // 모바일 터치 시작
+  // --------------------------------------------------
   gallerySlider.addEventListener('touchstart', (event) => {
-    galleryTouchStartX = event.changedTouches[0].clientX;
-  }, { passive: true });
-
-  gallerySlider.addEventListener('touchend', (event) => {
-    const distance = galleryTouchStartX - event.changedTouches[0].clientX;
-
-    if (Math.abs(distance) < 42) {
+    // 멀티터치 방지
+    if (event.touches.length !== 1 || galleryMoving) {
+      galleryTouchActive = false;
       return;
     }
 
-    if (distance > 0 && activeGalleryIndex === gallerySlides.length - 1) {
-      moveGallery(0);
+    galleryTouchActive = true;
+
+    galleryTouchStartX = event.touches[0].clientX;
+    galleryTouchStartY = event.touches[0].clientY;
+  }, { passive: true });
+
+  // --------------------------------------------------
+  // 모바일 터치 종료
+  // --------------------------------------------------
+  gallerySlider.addEventListener('touchend', (event) => {
+    if (!galleryTouchActive || galleryMoving) {
+      return;
     }
 
-    if (distance < 0 && activeGalleryIndex === 0) {
-      moveGallery(gallerySlides.length - 1);
+    galleryTouchActive = false;
+
+    const touch = event.changedTouches[0];
+
+    const distanceX =
+      galleryTouchStartX - touch.clientX;
+
+    const distanceY =
+      galleryTouchStartY - touch.clientY;
+
+    // 세로 스크롤이면 갤러리 이동하지 않음
+    if (
+      Math.abs(distanceX) < 42 ||
+      Math.abs(distanceX) < Math.abs(distanceY)
+    ) {
+      return;
+    }
+
+    // 왼쪽으로 스와이프 → 다음 사진 한 장
+    if (distanceX > 0) {
+      moveGallery(activeGalleryIndex + 1);
+    }
+
+    // 오른쪽으로 스와이프 → 이전 사진 한 장
+    else {
+      moveGallery(activeGalleryIndex - 1);
     }
   }, { passive: true });
 }

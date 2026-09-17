@@ -853,3 +853,18 @@ button {
     grid-template-columns: 76px 1fr;
   }
 }
+/* 갤러리 모바일 터치 동작 안정화 */
+.gallery-slider {
+  touch-action: pan-x pan-y;
+}
+
+.gallery-slide,
+.gallery-slide img {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.gallery-slide img {
+  -webkit-user-drag: none;
+}
