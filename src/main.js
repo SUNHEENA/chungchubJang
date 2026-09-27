@@ -30,7 +30,7 @@ const wedding = {
 const accounts = {
   groom: [
     { bank: '국민', holder: '나선희', number: '740502-00-064797' },
-    { bank: '농협', holder: '나창규', number: '356-1426-5409-93' },
+    { bank: '농협', holder: '나창규', number: '352-1426-2925-73' },
     { bank: '농협', holder: '김옥례', number: '616-02-265406' }
   ],
   bride: [
