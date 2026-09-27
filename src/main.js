@@ -312,6 +312,21 @@ const playMusic = async () => {
   await weddingAudio.play();
   setMusicPlaying();
 };
+const autoplayMusic = () => {
+  playMusic().catch(() => {});
+};
+
+autoplayMusic();
+
+['pointerdown', 'touchstart', 'keydown', 'scroll'].forEach((eventName) => {
+  window.addEventListener(eventName, (event) => {
+    if (!weddingAudio.paused || event.target?.closest?.('[data-music-toggle]')) {
+      return;
+    }
+
+    autoplayMusic();
+  }, { once: true, passive: true });
+});
 
 musicToggle.addEventListener('click', async () => {
   if (!weddingAudio.paused) {
