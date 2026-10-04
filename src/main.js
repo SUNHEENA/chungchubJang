@@ -57,22 +57,10 @@ document.querySelector('#app').innerHTML = `
       <img class="cover__image" src="${heroPhoto}" alt="눈 내리는 풍경 속 신랑 신부 일러스트" />
       <div class="cover__veil"></div>
       <div class="cover__text">
-        <div
-          style="display:inline-flex;align-items:center;gap:12px;padding:16px 22px;border:1px solid rgba(255,255,255,.5);border-radius:20px;background:rgba(255,255,255,.22);backdrop-filter:blur(16px);box-shadow:0 10px 30px rgba(74,63,56,.08);"
-        >
-          <span
-            style="color:#2b2521;font-family:'Noto Serif KR',serif;font-size:clamp(34px,8vw,44px);font-weight:400;line-height:1.05;white-space:nowrap;"
-          >
-            ${couple.groom}
-          </span>
-          <em style="color:#b8aaa0;font-family:'Cormorant Garamond',serif;font-size:clamp(30px,7vw,38px);font-style:italic;line-height:1;">
-            &
-          </em>
-          <span
-            style="color:#2b2521;font-family:'Noto Serif KR',serif;font-size:clamp(34px,8vw,44px);font-weight:400;line-height:1.05;white-space:nowrap;"
-          >
-            ${couple.bride}
-          </span>
+        <div class="cover-name-card" aria-label="신랑 신부 이름">
+          <span>${couple.groom}</span>
+          <em>&</em>
+          <span>${couple.bride}</span>
         </div>
       </div>
     </section>
@@ -270,6 +258,15 @@ document.querySelector('#app').innerHTML = `
     <strong data-copy-toast-subtitle></strong>
     <p data-copy-toast-value></p>
   </div>
+  <div class="gallery-lightbox" data-gallery-lightbox aria-hidden="true" role="dialog" aria-modal="true" aria-label="웨딩 사진 확대 보기">
+    <button class="gallery-lightbox__close" type="button" data-lightbox-close aria-label="확대 보기 닫기">×</button>
+    <button class="gallery-lightbox__nav gallery-lightbox__nav--prev" type="button" data-lightbox-prev aria-label="이전 사진">‹</button>
+    <figure class="gallery-lightbox__frame">
+      <img data-lightbox-image src="" alt="" />
+      <figcaption data-lightbox-count></figcaption>
+    </figure>
+    <button class="gallery-lightbox__nav gallery-lightbox__nav--next" type="button" data-lightbox-next aria-label="다음 사진">›</button>
+  </div>
 
 `;
 
@@ -460,10 +457,18 @@ const galleryCount = document.querySelector('[data-gallery-count]');
 const galleryProgress = document.querySelector('[data-gallery-progress]');
 const galleryPrevious = document.querySelector('[data-gallery-prev]');
 const galleryNext = document.querySelector('[data-gallery-next]');
+const galleryLightbox = document.querySelector('[data-gallery-lightbox]');
+const lightboxImage = document.querySelector('[data-lightbox-image]');
+const lightboxCount = document.querySelector('[data-lightbox-count]');
+const lightboxClose = document.querySelector('[data-lightbox-close]');
+const lightboxPrevious = document.querySelector('[data-lightbox-prev]');
+const lightboxNext = document.querySelector('[data-lightbox-next]');
 
 let activeGalleryIndex = 0;
 let galleryScrollFrame;
 let galleryMoving = false;
+let lightboxTouchStartX = 0;
+let lightboxTouchStartY = 0;
 
 const updateGalleryNavigator = (index) => {
   activeGalleryIndex = Math.max(
@@ -479,13 +484,8 @@ const updateGalleryNavigator = (index) => {
 };
 
 const moveGallery = (index) => {
-  // 첫 장/마지막 장 밖으로 이동하지 않도록 제한
-  const targetIndex = Math.max(
-    0,
-    Math.min(index, gallerySlides.length - 1)
-  );
+  const targetIndex = (index + gallerySlides.length) % gallerySlides.length;
 
-  // 이미 해당 사진이거나 이동 중이면 무시
   if (targetIndex === activeGalleryIndex || galleryMoving) {
     return;
   }
@@ -556,6 +556,103 @@ if (gallerySlides.length) {
 
   galleryNext.addEventListener('click', () => {
     moveGallery(activeGalleryIndex + 1);
+  });
+
+  const renderLightbox = (index) => {
+    const targetIndex = (index + galleryItems.length) % galleryItems.length;
+    const item = galleryItems[targetIndex];
+
+    activeGalleryIndex = targetIndex;
+    lightboxImage.src = item.src;
+    lightboxImage.alt = item.label;
+    lightboxCount.textContent = `${targetIndex + 1} / ${galleryItems.length}`;
+  };
+
+  const openLightbox = (index) => {
+    renderLightbox(index);
+    galleryLightbox.classList.add('is-visible');
+    galleryLightbox.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('has-gallery-lightbox');
+    lightboxClose.focus({ preventScroll: true });
+  };
+
+  const closeLightbox = () => {
+    galleryLightbox.classList.remove('is-visible');
+    galleryLightbox.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('has-gallery-lightbox');
+  };
+
+  const moveLightbox = (index) => {
+    renderLightbox(index);
+    updateGalleryNavigator(activeGalleryIndex);
+    gallerySlides[activeGalleryIndex].scrollIntoView({
+      behavior: 'smooth',
+      block: 'nearest',
+      inline: 'start'
+    });
+  };
+
+  gallerySlides.forEach((slide, index) => {
+    slide.setAttribute('tabindex', '0');
+    slide.setAttribute('role', 'button');
+    slide.setAttribute('aria-label', `${index + 1}번째 사진 확대 보기`);
+
+    slide.addEventListener('click', () => openLightbox(index));
+    slide.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        openLightbox(index);
+      }
+    });
+  });
+
+  lightboxClose.addEventListener('click', closeLightbox);
+  lightboxPrevious.addEventListener('click', () => moveLightbox(activeGalleryIndex - 1));
+  lightboxNext.addEventListener('click', () => moveLightbox(activeGalleryIndex + 1));
+
+  galleryLightbox.addEventListener('click', (event) => {
+    if (event.target === galleryLightbox) {
+      closeLightbox();
+    }
+  });
+
+  galleryLightbox.addEventListener('touchstart', (event) => {
+    if (event.touches.length !== 1) {
+      return;
+    }
+
+    lightboxTouchStartX = event.touches[0].clientX;
+    lightboxTouchStartY = event.touches[0].clientY;
+  }, { passive: true });
+
+  galleryLightbox.addEventListener('touchend', (event) => {
+    const touch = event.changedTouches[0];
+    const distanceX = lightboxTouchStartX - touch.clientX;
+    const distanceY = lightboxTouchStartY - touch.clientY;
+
+    if (Math.abs(distanceX) < 44 || Math.abs(distanceX) < Math.abs(distanceY)) {
+      return;
+    }
+
+    moveLightbox(activeGalleryIndex + (distanceX > 0 ? 1 : -1));
+  }, { passive: true });
+
+  window.addEventListener('keydown', (event) => {
+    if (!galleryLightbox.classList.contains('is-visible')) {
+      return;
+    }
+
+    if (event.key === 'Escape') {
+      closeLightbox();
+    }
+
+    if (event.key === 'ArrowLeft') {
+      moveLightbox(activeGalleryIndex - 1);
+    }
+
+    if (event.key === 'ArrowRight') {
+      moveLightbox(activeGalleryIndex + 1);
+    }
   });
 
   // --------------------------------------------------
