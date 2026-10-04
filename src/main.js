@@ -103,7 +103,11 @@ document.querySelector('#app').innerHTML = `
         <h2>October 2026</h2>
       </div>
       <div class="calendar-grid calendar-grid--week">
-        ${['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'].map((day) => `<span>${day}</span>`).join('')}
+        ${['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'].map((day, index) => {
+          const weekendClass = index === 0 || index === 6 ? ' is-weekend' : '';
+
+          return `<span class="${weekendClass.trim()}">${day}</span>`;
+        }).join('')}
       </div>
       <div class="calendar-grid">
         ${Array.from({ length: 35 }, (_, index) => {
@@ -112,7 +116,11 @@ document.querySelector('#app').innerHTML = `
             return '<span class="calendar-day is-empty"></span>';
           }
 
-          return `<span class="calendar-day${day === 25 ? ' is-wedding' : ''}">${day}</span>`;
+          const dayOfWeek = index % 7;
+          const weekendClass = dayOfWeek === 0 || dayOfWeek === 6 ? ' is-weekend' : '';
+          const weddingClass = day === 25 ? ' is-wedding' : '';
+
+          return `<span class="calendar-day${weekendClass}${weddingClass}">${day}</span>`;
         }).join('')}
       </div>
       <p class="countdown" data-countdown></p>

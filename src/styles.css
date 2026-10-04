@@ -321,6 +321,11 @@ button {
   font-weight: 600;
 }
 
+.calendar-grid--week .is-weekend,
+.calendar-day.is-weekend {
+  color: #c75f58;
+}
+
 .calendar-day {
   aspect-ratio: 1;
   display: grid;
