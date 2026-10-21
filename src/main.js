@@ -47,6 +47,7 @@ const galleryItems = Object.entries(galleryModules)
     filename: path.split('/').pop()
   }));
 const mapQuery = encodeURIComponent('홀리데이 인 광주 광주광역시 서구 치평동 상무누리로 55');
+const calendarToday = new Date();
 
 document.querySelector('#app').innerHTML = `
   <main class="invitation">
@@ -119,8 +120,13 @@ document.querySelector('#app').innerHTML = `
           const dayOfWeek = index % 7;
           const weekendClass = dayOfWeek === 0 || dayOfWeek === 6 ? ' is-weekend' : '';
           const weddingClass = day === 25 ? ' is-wedding' : '';
+          const todayClass = calendarToday.getFullYear() === 2026 &&
+            calendarToday.getMonth() === 9 &&
+            calendarToday.getDate() === day
+            ? ' is-today'
+            : '';
 
-          return `<span class="calendar-day${weekendClass}${weddingClass}">${day}</span>`;
+          return `<span class="calendar-day${weekendClass}${weddingClass}${todayClass}">${day}</span>`;
         }).join('')}
       </div>
       <p class="countdown" data-countdown></p>
