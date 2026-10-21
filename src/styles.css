@@ -345,6 +345,12 @@ button {
   color: #ffffff;
 }
 
+.calendar-day.is-today {
+  outline: 1px solid #8d7664;
+  outline-offset: 2px;
+  font-weight: 700;
+}
+
 .countdown {
   margin: 28px 0 0;
   color: #666;
